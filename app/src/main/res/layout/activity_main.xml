@@ -6,84 +6,115 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <RadioGroup
-        android:id="@+id/radioGroup01"
-        android:layout_width="352dp"
-        android:layout_height="125dp"
-        android:layout_marginTop="4dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ls_view">
-
-        <RadioButton
-            android:id="@+id/englishButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="English" />
-
-        <RadioButton
-            android:id="@+id/arabicButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Arabic" />
-    </RadioGroup>
 
     <TextView
         android:id="@+id/ls_view"
-        android:layout_width="352dp"
-        android:layout_height="52dp"
-        android:layout_marginTop="16dp"
-        android:text="Select The Translation Language"
+        android:layout_width="413dp"
+        android:layout_height="39dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="30dp"
+        android:fontFamily="sans-serif-medium"
+        android:text="Translation Language"
+        android:textAlignment="center"
         android:textColor="#673AB7"
-        android:textSize="20sp"
+        android:textSize="30sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.491"
+        app:layout_constraintHorizontal_bias="0.031"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <Button
+        android:id="@+id/en_button"
+        android:layout_width="111dp"
+        android:layout_height="75dp"
+        android:layout_marginEnd="84dp"
+        android:textSize="15sp"
+        android:background="@drawable/rounded_button"
+        android:fontFamily="sans-serif-medium"
+        android:textStyle="bold"
+        android:text="English"
+        app:layout_constraintBottom_toTopOf="@+id/ps_view"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ls_view"
+        app:layout_constraintVertical_bias="0.48" />
+
+    <Button
+        android:id="@+id/ar_button"
+        android:layout_width="111dp"
+        android:layout_height="75dp"
+        android:layout_marginStart="84dp"
+        android:background="@drawable/rounded_button"
+        android:fontFamily="sans-serif-medium"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        android:text="Arabic"
+        app:layout_constraintBottom_toTopOf="@+id/ps_view"
+        app:layout_constraintEnd_toStartOf="@+id/en_button"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ls_view"
+        app:layout_constraintVertical_bias="0.48" />
+
     <TextView
         android:id="@+id/ps_view"
-        android:layout_width="352dp"
-        android:layout_height="52dp"
-        android:layout_marginTop="8dp"
-        android:text="Select The Process Type From Below"
+        android:layout_width="412dp"
+        android:layout_height="39dp"
+        android:layout_marginStart="29dp"
+        android:layout_marginTop="200dp"
+        android:layout_marginEnd="30dp"
+        android:fontFamily="sans-serif-medium"
+        android:text="Select Process Type"
+        android:textAlignment="center"
         android:textColor="#673AB7"
-        android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.508"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/radioGroup01" />
-
-    <RadioGroup
-        android:id="@+id/radioGroup02"
-        android:layout_width="352dp"
-        android:layout_height="119dp"
+        android:textSize="30sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ps_view">
+        app:layout_constraintTop_toBottomOf="@+id/ls_view"
+        tools:ignore="MissingConstraints" />
 
-        <RadioButton
-            android:id="@+id/vt2slButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Voice-Text to Sign Language" />
+    <Button
+        android:id="@+id/sl2vt_button"
+        android:layout_width="230dp"
+        android:layout_height="85dp"
+        android:layout_marginTop="40dp"
+        android:background="@drawable/rounded_button"
+        android:fontFamily="sans-serif-medium"
+        android:text="Sign Language to Voice-Text"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.494"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ps_view" />
 
-        <RadioButton
-            android:id="@+id/sl2vtButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Sign Language to Voice-Text" />
-    </RadioGroup>
+    <Button
+        android:id="@+id/vt2sl_button"
+        android:layout_width="230dp"
+        android:layout_height="85dp"
+        android:background="@drawable/rounded_button"
+        android:fontFamily="sans-serif-medium"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        android:text="Voice-Text to Sign Language"
+        app:layout_constraintBottom_toTopOf="@+id/confirm_button1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.494"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/sl2vt_button"
+        app:layout_constraintVertical_bias="0.271" />
 
     <Button
         android:id="@+id/confirm_button1"
-        android:layout_width="352dp"
-        android:layout_height="70dp"
-        android:layout_marginBottom="212dp"
-        android:text="Done"
+        android:layout_width="163dp"
+        android:layout_height="65dp"
+        android:layout_marginBottom="56dp"
+        android:text="Finish"
+        android:fontFamily="sans-serif-medium"
+        android:textSize="15sp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.508"
+        app:layout_constraintHorizontal_bias="0.925"
         app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

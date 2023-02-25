@@ -13,6 +13,9 @@
         android:layout_marginTop="24dp"
         android:layout_marginEnd="24dp"
         android:text="Switch"
+        android:fontFamily="sans-serif-medium"
+        android:textSize="15sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -22,6 +25,9 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="24dp"
+        android:fontFamily="sans-serif-medium"
+        android:textSize="15sp"
+        android:textStyle="bold"
         android:text="Home"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -31,12 +37,12 @@
         android:layout_width="372dp"
         android:layout_height="290dp"
         android:layout_marginBottom="92dp"
-        android:text="${}"
+        android:text="Translated Video will be here"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.384"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/videoView"
+        app:layout_constraintTop_toBottomOf="@+id/record_videoView"
         app:layout_constraintVertical_bias="0.0" />
 
     <ImageButton
@@ -55,14 +61,18 @@
         android:id="@+id/record_video_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:onClick="startVideo"
         android:layout_marginEnd="24dp"
         android:layout_marginBottom="24dp"
+        android:fontFamily="sans-serif-medium"
+        android:textSize="15sp"
+        android:textStyle="bold"
         android:text="Start Video"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
     <VideoView
-        android:id="@+id/videoView"
+        android:id="@+id/record_videoView"
         android:layout_width="373dp"
         android:layout_height="263dp"
         android:layout_marginTop="88dp"

@@ -13,6 +13,9 @@
         android:layout_marginTop="24dp"
         android:layout_marginEnd="24dp"
         android:text="Switch"
+        android:fontFamily="sans-serif-medium"
+        android:textSize="15sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -23,6 +26,9 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="24dp"
         android:text="Home"
+        android:fontFamily="sans-serif-medium"
+        android:textSize="15sp"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -33,6 +39,9 @@
         android:layout_marginEnd="24dp"
         android:layout_marginBottom="24dp"
         android:text="Start Recording"
+        android:fontFamily="sans-serif-medium"
+        android:textSize="15sp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -63,5 +72,18 @@
             android:layout_height="wrap_content"
             android:hint="Enter your message" />
     </com.google.android.material.textfield.TextInputLayout>
+
+    <Button
+        android:id="@+id/trans_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginBottom="24dp"
+        android:text="Translate"
+        android:fontFamily="sans-serif-medium"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
