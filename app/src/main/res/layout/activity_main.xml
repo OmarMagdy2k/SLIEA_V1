@@ -8,9 +8,9 @@
 
     <RadioGroup
         android:id="@+id/languageGroup"
-        android:layout_width="352dp"
-        android:layout_height="125dp"
-        android:layout_marginTop="4dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ls_view">
@@ -19,21 +19,21 @@
             android:id="@+id/englishButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="English" />
+            android:text="@string/english" />
 
         <RadioButton
             android:id="@+id/arabicButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Arabic" />
+            android:text="@string/arabic" />
     </RadioGroup>
 
     <TextView
         android:id="@+id/ls_view"
-        android:layout_width="352dp"
-        android:layout_height="52dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="Select The Translation Language"
+        android:text="@string/select_the_translation_language"
         android:textColor="#673AB7"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -43,10 +43,10 @@
 
     <TextView
         android:id="@+id/ps_view"
-        android:layout_width="352dp"
-        android:layout_height="52dp"
-        android:layout_marginTop="8dp"
-        android:text="Select The Process Type From Below"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:text="@string/select_the_process_type_from_below"
         android:textColor="#673AB7"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -56,8 +56,9 @@
 
     <RadioGroup
         android:id="@+id/processGroup"
-        android:layout_width="352dp"
-        android:layout_height="119dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ps_view">
@@ -66,24 +67,25 @@
             android:id="@+id/vt2slButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Voice-Text to Sign Language" />
+            android:text="@string/voice_text_to_sign_language" />
 
         <RadioButton
             android:id="@+id/sl2vtButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Sign Language to Voice-Text" />
+            android:text="@string/sign_language_to_voice_text" />
     </RadioGroup>
 
     <Button
         android:id="@+id/confirm_button1"
-        android:layout_width="352dp"
-        android:layout_height="70dp"
-        android:layout_marginBottom="212dp"
-        android:text="Done"
+        android:layout_width="131dp"
+        android:layout_height="52dp"
+        android:text="@string/done"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.508"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/processGroup"
+        app:layout_constraintVertical_bias="0.986" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
