@@ -7,7 +7,7 @@
     tools:context=".MainActivity">
 
     <RadioGroup
-        android:id="@+id/radioGroup01"
+        android:id="@+id/languageGroup"
         android:layout_width="352dp"
         android:layout_height="125dp"
         android:layout_marginTop="4dp"
@@ -52,10 +52,10 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.508"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/radioGroup01" />
+        app:layout_constraintTop_toBottomOf="@+id/languageGroup" />
 
     <RadioGroup
-        android:id="@+id/radioGroup02"
+        android:id="@+id/processGroup"
         android:layout_width="352dp"
         android:layout_height="119dp"
         app:layout_constraintEnd_toEndOf="parent"
