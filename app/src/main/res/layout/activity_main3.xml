@@ -56,11 +56,11 @@
         android:id="@+id/micButton"
         android:layout_width="57dp"
         android:layout_height="48dp"
-        android:background="#8C42F5"
+        android:background="#1563D8"
         android:soundEffectsEnabled="true"
         app:layout_constraintBottom_toTopOf="@+id/trans_button"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@android:drawable/ic_btn_speak_now" />
+        app:srcCompat="@mipmap/ic_mic_foreground" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="340dp"
@@ -74,7 +74,7 @@
         android:id="@+id/editTextTextMultiLine"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:backgroundTint="#C19FF3"
+        android:backgroundTint="#1563D8"
         android:ems="10"
         android:gravity="start|top"
         android:hint="@string/enter_your_message"

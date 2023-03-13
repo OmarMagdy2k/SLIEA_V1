@@ -43,7 +43,7 @@
         android:id="@+id/out_voice_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:backgroundTint="#8C42F5"
+        android:backgroundTint="#1563D8"
         android:contentDescription="@string/app_name"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
