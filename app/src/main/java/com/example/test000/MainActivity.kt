@@ -17,13 +17,13 @@ class MainActivity : AppCompatActivity() {
         processGroup.setOnCheckedChangeListener { group, checkedId ->
             if(checkedId == R.id.vt2slButton){
                 confirmButton.setOnClickListener {
-                    val intent = Intent(this,MainActivity3::class.java)
+                    val intent = Intent(this,TextVoice2SL::class.java)
                     startActivity(intent)
                 }
             }
             else if (checkedId == R.id.sl2vtButton){
                 confirmButton.setOnClickListener {
-                    val intent = Intent(this,MainActivity2::class.java)
+                    val intent = Intent(this,Video2Text::class.java)
                     startActivity(intent)
                 }
             }

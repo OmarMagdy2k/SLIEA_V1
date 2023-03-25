@@ -11,7 +11,7 @@ import android.widget.MediaController
 import android.widget.VideoView
 
 
-class MainActivity2 : AppCompatActivity() {
+class Video2Text : AppCompatActivity() {
 
 private lateinit var videoView: VideoView
 private var ourRequestCode : Int = 123 // any number
@@ -19,11 +19,11 @@ private var ourRequestCode : Int = 123 // any number
     //Change Pages
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main2)
+        setContentView(R.layout.activity_video2text)
 
         val button1 = findViewById<Button>(R.id.switch_button)
         button1.setOnClickListener {
-            val intent = Intent(this, MainActivity3::class.java)
+            val intent = Intent(this, TextVoice2SL::class.java)
             startActivity(intent)
 
         }
