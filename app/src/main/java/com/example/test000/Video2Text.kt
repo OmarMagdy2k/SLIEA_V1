@@ -50,6 +50,7 @@ private var ourRequestCode : Int = 123 // any number
         }
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == ourRequestCode && resultCode == RESULT_OK){

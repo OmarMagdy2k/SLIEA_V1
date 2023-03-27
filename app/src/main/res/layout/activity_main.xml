@@ -70,10 +70,17 @@
             android:text="@string/voice_text_to_sign_language" />
 
         <RadioButton
-            android:id="@+id/sl2vtButton"
+            android:id="@+id/slp2vtButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/sign_language_to_voice_text2" />
+
+        <RadioButton
+            android:id="@+id/slv2vtButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/sign_language_to_voice_text" />
+
     </RadioGroup>
 
     <Button

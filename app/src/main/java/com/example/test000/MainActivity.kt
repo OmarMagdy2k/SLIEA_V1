@@ -21,9 +21,15 @@ class MainActivity : AppCompatActivity() {
                     startActivity(intent)
                 }
             }
-            else if (checkedId == R.id.sl2vtButton){
+            else if (checkedId == R.id.slv2vtButton){
                 confirmButton.setOnClickListener {
                     val intent = Intent(this,Video2Text::class.java)
+                    startActivity(intent)
+                }
+            }
+            else if (checkedId == R.id.slp2vtButton){
+                confirmButton.setOnClickListener {
+                    val intent = Intent(this,Image2Text::class.java)
                     startActivity(intent)
                 }
             }
