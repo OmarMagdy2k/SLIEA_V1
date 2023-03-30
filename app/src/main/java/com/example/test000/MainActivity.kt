@@ -15,22 +15,24 @@ class MainActivity : AppCompatActivity() {
         val processGroup = findViewById<RadioGroup>(R.id.processGroup)
 
         processGroup.setOnCheckedChangeListener { group, checkedId ->
-            if(checkedId == R.id.vt2slButton){
-                confirmButton.setOnClickListener {
-                    val intent = Intent(this,TextVoice2SL::class.java)
-                    startActivity(intent)
+            when (checkedId) {
+                R.id.vt2slButton -> {
+                    confirmButton.setOnClickListener {
+                        val intent = Intent(this,TextVoice2SL::class.java)
+                        startActivity(intent)
+                    }
                 }
-            }
-            else if (checkedId == R.id.slv2vtButton){
-                confirmButton.setOnClickListener {
-                    val intent = Intent(this,Video2Text::class.java)
-                    startActivity(intent)
+                R.id.slv2vtButton -> {
+                    confirmButton.setOnClickListener {
+                        val intent = Intent(this,Video2Text::class.java)
+                        startActivity(intent)
+                    }
                 }
-            }
-            else if (checkedId == R.id.slp2vtButton){
-                confirmButton.setOnClickListener {
-                    val intent = Intent(this,Image2Text::class.java)
-                    startActivity(intent)
+                R.id.slp2vtButton -> {
+                    confirmButton.setOnClickListener {
+                        val intent = Intent(this,Image2Text::class.java)
+                        startActivity(intent)
+                    }
                 }
             }
         }

@@ -14,7 +14,6 @@
         android:text="@string/switch_mode"
         android:textSize="15sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/graphic_videoView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -26,19 +25,18 @@
         android:text="@string/home"
         android:textSize="15sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/graphic_videoView"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <VideoView
         android:id="@+id/graphic_videoView"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="480dp"
         app:layout_constraintBottom_toTopOf="@+id/editTextTextMultiLine"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.394"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.3" />
 
     <Button
         android:id="@+id/trans_button"
@@ -60,7 +58,9 @@
         android:soundEffectsEnabled="true"
         app:layout_constraintBottom_toTopOf="@+id/trans_button"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@mipmap/ic_mic_foreground" />
+        app:srcCompat="@mipmap/ic_mic_foreground"
+        android:contentDescription="@string/recoder"
+        />
 
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="340dp"
@@ -83,6 +83,7 @@
         android:textSize="20sp"
         app:layout_constraintBottom_toTopOf="@+id/trans_button"
         app:layout_constraintEnd_toStartOf="@+id/micButton"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

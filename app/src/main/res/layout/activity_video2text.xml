@@ -14,7 +14,6 @@
         android:text="@string/switch_mode"
         android:textSize="15sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/record_videoView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -26,7 +25,6 @@
         android:text="@string/home"
         android:textSize="15sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/record_videoView"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -41,48 +39,58 @@
 
     <ImageButton
         android:id="@+id/out_voice_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="55dp"
+        android:layout_height="50dp"
         android:backgroundTint="#1563D8"
-        android:contentDescription="@string/app_name"
+        android:contentDescription="@string/translation_audio"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@android:drawable/ic_lock_silent_mode_off" />
 
-    <Button
-        android:id="@+id/record_video_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="sans-serif-medium"
-        android:onClick="startVideo"
-        android:text="@string/start_video"
-        android:textSize="15sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
     <VideoView
         android:id="@+id/record_videoView"
-        android:layout_width="0dp"
-        android:layout_height="480dp"
+        android:layout_width="wrap_content"
+        android:layout_height="495dp"
         app:layout_constraintBottom_toTopOf="@+id/out_trans_text"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.3" />
 
     <Button
         android:id="@+id/trans_button"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="5dp"
-        android:layout_marginEnd="5dp"
         android:fontFamily="sans-serif-medium"
         android:text="@string/translate"
         android:textSize="15sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/record_video_button"
+        app:layout_constraintEnd_toStartOf="@+id/galleryButton"
         app:layout_constraintStart_toEndOf="@+id/out_voice_button" />
+
+    <ImageButton
+        android:id="@+id/videoButton"
+        android:layout_width="55dp"
+        android:layout_height="50dp"
+        android:backgroundTint="#1563D8"
+        android:onClick="startVideo"
+        android:src="@mipmap/ic_video_inv_foreground"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:contentDescription="@string/open_video"
+        />
+
+    <ImageButton
+        android:id="@+id/galleryButton"
+        android:layout_width="55dp"
+        android:layout_height="50dp"
+        android:backgroundTint="#1563D8"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/videoButton"
+        app:srcCompat="@mipmap/ic_gallery_inv_foreground"
+        android:contentDescription="@string/open_gallery"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

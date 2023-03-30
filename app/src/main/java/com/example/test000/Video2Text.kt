@@ -33,7 +33,7 @@ private var ourRequestCode : Int = 123 // any number
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
         }
-        videoView = findViewById<VideoView>(R.id.record_videoView)
+        videoView = findViewById(R.id.record_videoView)
         // now set up media controller for the play pause next pre
 
         val mediaCollection = MediaController(this)
