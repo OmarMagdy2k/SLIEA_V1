@@ -2,6 +2,7 @@ package com.example.test000
 
 
 import android.Manifest
+import android.content.ContentResolver
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -11,6 +12,8 @@ import android.widget.ImageView
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Environment
+import android.util.Log
+import android.webkit.MimeTypeMap
 import android.widget.ImageButton
 import android.widget.Toast
 import androidx.camera.core.ImageCapture.*
@@ -18,46 +21,44 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import java.io.File
+import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.Date
 
 
 class Image2Text : AppCompatActivity() {
 
 
     private var cameraRequestCode : Int = 123
+    private var galleryRequestCode : Int = 122
     private lateinit var currentPhotoPath : String
     private lateinit var selectedImage : ImageView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_image2text)
 
-
+        selectedImage = findViewById(R.id.imageView)
 
         val button1 = findViewById<Button>(R.id.switch_button)
         button1.setOnClickListener {
             val intent = Intent(this, TextVoice2SL::class.java)
             startActivity(intent)
-
         }
-
         val button2 = findViewById<Button>(R.id.home_button)
         button2.setOnClickListener {
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
         }
-
         val cameraBtn = findViewById<ImageButton>(R.id.cameraButton)
         cameraBtn.setOnClickListener {
             askCameraPermissions()
         }
         val galleryBtn = findViewById<ImageButton>(R.id.galleryButton)
         galleryBtn.setOnClickListener {
-            Toast.makeText(this,"Gallery Btn is Clicked.",Toast.LENGTH_LONG).show()
+            val gallery = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+            startActivityForResult(gallery, galleryRequestCode)
         }
-
-       selectedImage = findViewById(R.id.imageView)
-
     }
 
     private fun askCameraPermissions() {
@@ -79,17 +80,35 @@ class Image2Text : AppCompatActivity() {
         }
     }
 
-
     @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == cameraRequestCode && resultCode == RESULT_OK) {
             val f = File(currentPhotoPath)
             selectedImage.setImageURI(Uri.fromFile(f))
+            Log.d("tag", "Absolute Url ${Uri.fromFile(f)}")
 
+            val mediaScanIntent = Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE)
+            val contentUri = Uri.fromFile(f)
+            mediaScanIntent.data = contentUri
+            this.sendBroadcast(mediaScanIntent)
+        }
+        if (requestCode == galleryRequestCode && resultCode == RESULT_OK) {
+            val contentUri: Uri? = data?.data
+            //val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
+            val timeStamp = DateFormat.getDateInstance().format(Date())
+
+            val imageFileName = "JPEG_${timeStamp}.${getFileExt(contentUri)}"
+            Log.d("tag", "Gallery Image Uri $imageFileName")
+            selectedImage.setImageURI(contentUri)
         }
     }
 
+    private fun getFileExt(contentUri: Uri?): String {
+        val c: ContentResolver = contentResolver
+        val mime: MimeTypeMap = MimeTypeMap.getSingleton()
+        return mime.getExtensionFromMimeType(contentUri?.let { c.getType(it) }).toString()
+    }
 
 
     private fun dispatchTakePictureIntent() {
@@ -115,7 +134,9 @@ class Image2Text : AppCompatActivity() {
 
     private fun createImageFile(): File {
         // Create an image file name
-        val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
+        //val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
+        val timeStamp = DateFormat.getDateInstance().format(Date())
+
         val imageFileName = "JPEG_$timeStamp"
         // val storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
         val storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
@@ -126,7 +147,5 @@ class Image2Text : AppCompatActivity() {
         )
         currentPhotoPath = image.absolutePath
         return image
-
     }
-
 }
