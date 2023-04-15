@@ -50,25 +50,24 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <androidx.constraintlayout.utils.widget.ImageFilterButton
-        android:id="@+id/micButton"
-        android:layout_width="57dp"
-        android:layout_height="48dp"
-        android:background="#1563D8"
-        android:soundEffectsEnabled="true"
-        app:layout_constraintBottom_toTopOf="@+id/trans_button"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@mipmap/ic_mic_foreground"
-        android:contentDescription="@string/recoder"
-        />
+<!--    <androidx.constraintlayout.utils.widget.ImageFilterButton-->
+<!--        android:id="@+id/micButton"-->
+<!--        android:layout_width="57dp"-->
+<!--        android:layout_height="48dp"-->
+<!--        android:background="#1563D8"-->
+<!--        android:soundEffectsEnabled="true"-->
+<!--        app:layout_constraintBottom_toTopOf="@+id/trans_button"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:srcCompat="@mipmap/ic_mic_foreground"-->
+<!--        android:contentDescription="@string/recoder"-->
+<!--        />-->
 
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="340dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="1dp"
         app:layout_constraintBottom_toTopOf="@+id/trans_button"
-        app:layout_constraintEnd_toStartOf="@+id/micButton"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <EditText
         android:id="@+id/editTextTextMultiLine"
@@ -82,8 +81,7 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         android:textSize="20sp"
         app:layout_constraintBottom_toTopOf="@+id/trans_button"
-        app:layout_constraintEnd_toStartOf="@+id/micButton"
-        app:layout_constraintStart_toStartOf="parent"
-        />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

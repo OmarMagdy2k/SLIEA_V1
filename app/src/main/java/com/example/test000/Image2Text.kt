@@ -95,9 +95,7 @@ class Image2Text : AppCompatActivity() {
         }
         if (requestCode == galleryRequestCode && resultCode == RESULT_OK) {
             val contentUri: Uri? = data?.data
-            //val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
-            val timeStamp = DateFormat.getDateInstance().format(Date())
-
+            val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
             val imageFileName = "JPEG_${timeStamp}.${getFileExt(contentUri)}"
             Log.d("tag", "Gallery Image Uri $imageFileName")
             selectedImage.setImageURI(contentUri)
@@ -134,11 +132,9 @@ class Image2Text : AppCompatActivity() {
 
     private fun createImageFile(): File {
         // Create an image file name
-        //val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
-        val timeStamp = DateFormat.getDateInstance().format(Date())
+        val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
 
         val imageFileName = "JPEG_$timeStamp"
-        // val storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
         val storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
         val image = File.createTempFile(
             imageFileName,
