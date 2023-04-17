@@ -89,11 +89,12 @@ class Image2Text : AppCompatActivity() {
        uploadTask.addOnSuccessListener { taskSnapshot ->
            // File uploaded successfully, get the download URL
            taskSnapshot.metadata?.reference?.downloadUrl?.addOnSuccessListener { uri ->
-//               val imageUrl = uri.toString()
-//               // Add the imageUrl and imagePath to Firestore
-//               addImageUrlToFirestore(imageUrl, imageRef.path, tempFile.name)
-               Toast.makeText(this, "Uploaded Successfully", Toast.LENGTH_SHORT).show()
-               translateImage(tempFile.name)
+               val fileName = tempFile.name
+               translateImage(fileName)
+                //val imageUrl = uri.toString()
+                // Add the imageUrl and imagePath to Firestore
+                //addImageUrlToFirestore(imageUrl, imageRef.path, tempFile.name)
+                //Toast.makeText(this, "Uploaded Successfully", Toast.LENGTH_SHORT).show()
            }
        }.addOnFailureListener { exception ->
            // Handle the failure event here
@@ -107,16 +108,16 @@ class Image2Text : AppCompatActivity() {
         val py = Python.getInstance()
         val module = py.getModule("client")
         try {
-            val prediction = module.callAttr("translate_image",
-                fileName)
+            val prediction = module.callAttr("translate_image", fileName)
                 .toJava(String::class.java)
-            txtTranslated.text = prediction
-            txtTranslated.textSize = 24f
-
+            txtTranslated.post { // using txtTranslated.post to update TextView in UI thread
+                txtTranslated.text = prediction
+            }
         } catch (e: PyException) {
             Toast.makeText(this, e.message, Toast.LENGTH_LONG).show()
         }
     }
+
     private fun askCameraPermissions() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA), cameraRequestCode)

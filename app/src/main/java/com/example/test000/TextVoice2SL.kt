@@ -2,7 +2,6 @@ package com.example.test000
 
 import android.annotation.SuppressLint
 import android.app.DownloadManager
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
@@ -69,7 +68,6 @@ class TextVoice2SL : AppCompatActivity() {
         }
 
     }
-    @SuppressLint("Range")
     private fun downloadVideoFromDrive(driveUrl: String, fileName: String) {
         val downloadManager = getSystemService(DOWNLOAD_SERVICE) as DownloadManager
         val request = DownloadManager.Request(Uri.parse(driveUrl))
@@ -84,6 +82,7 @@ class TextVoice2SL : AppCompatActivity() {
         val downloadId = downloadManager.enqueue(request)
 
         handler.postDelayed(object : Runnable {
+            @SuppressLint("Range")
             override fun run() {
                 val query = DownloadManager.Query()
                 query.setFilterById(downloadId)
@@ -116,7 +115,7 @@ class TextVoice2SL : AppCompatActivity() {
             videoView.setMediaController(mediaController)
             videoView.start()
         } else {
-            Toast.makeText(this, "Video file not found", Toast.LENGTH_SHORT).show()
+            //Toast.makeText(this, "Video file not found", Toast.LENGTH_SHORT).show()
         }
     }
 
