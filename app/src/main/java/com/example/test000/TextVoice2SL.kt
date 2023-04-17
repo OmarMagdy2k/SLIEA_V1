@@ -27,7 +27,7 @@ class TextVoice2SL : AppCompatActivity() {
 
         val button3 = findViewById<Button>(R.id.switch_button)
         button3.setOnClickListener {
-            val intent = Intent(this, Video2Text::class.java)
+            val intent = Intent(this, Image2Text::class.java)
             startActivity(intent)
         }
 
@@ -71,7 +71,7 @@ class TextVoice2SL : AppCompatActivity() {
     }
     @SuppressLint("Range")
     private fun downloadVideoFromDrive(driveUrl: String, fileName: String) {
-        val downloadManager = getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+        val downloadManager = getSystemService(DOWNLOAD_SERVICE) as DownloadManager
         val request = DownloadManager.Request(Uri.parse(driveUrl))
         request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI or DownloadManager.Request.NETWORK_MOBILE)
         request.setAllowedOverRoaming(false)

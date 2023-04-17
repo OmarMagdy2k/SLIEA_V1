@@ -10,18 +10,25 @@ import android.provider.MediaStore
 import android.widget.Button
 import android.widget.ImageView
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Environment
 import android.util.Log
 import android.webkit.MimeTypeMap
 import android.widget.ImageButton
+import android.widget.TextView
 import android.widget.Toast
 import androidx.camera.core.ImageCapture.*
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import com.chaquo.python.PyException
+import com.chaquo.python.Python
+import com.chaquo.python.android.AndroidPlatform
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
 import java.io.File
-import java.text.DateFormat
+import java.io.FileOutputStream
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.Date
@@ -29,16 +36,18 @@ import java.util.Date
 
 class Image2Text : AppCompatActivity() {
 
-
     private var cameraRequestCode : Int = 123
     private var galleryRequestCode : Int = 122
     private lateinit var currentPhotoPath : String
     private lateinit var selectedImage : ImageView
+    private lateinit var txtTranslated : TextView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_image2text)
 
         selectedImage = findViewById(R.id.imageView)
+        txtTranslated = findViewById(R.id.out_trans_text)
 
         val button1 = findViewById<Button>(R.id.switch_button)
         button1.setOnClickListener {
@@ -59,8 +68,55 @@ class Image2Text : AppCompatActivity() {
             val gallery = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
             startActivityForResult(gallery, galleryRequestCode)
         }
+        val transBtn = findViewById<Button>(R.id.trans_button)
+        transBtn.setOnClickListener {
+            uploadImage(selectedImage)
+        }
     }
+   private fun uploadImage(imageView: ImageView) {
+       imageView.buildDrawingCache()
+       val bitmap = imageView.drawingCache
+       val tempFile = File.createTempFile("image", ".jpg")
+       val outputStream = FileOutputStream(tempFile)
+       bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
+       outputStream.flush()
+       outputStream.close()
+       val storageRef = FirebaseStorage.getInstance().reference
+       val imageRef = storageRef.child("images/${tempFile.name}")
 
+       val uploadTask = imageRef.putFile(Uri.fromFile(tempFile))
+
+       uploadTask.addOnSuccessListener { taskSnapshot ->
+           // File uploaded successfully, get the download URL
+           taskSnapshot.metadata?.reference?.downloadUrl?.addOnSuccessListener { uri ->
+//               val imageUrl = uri.toString()
+//               // Add the imageUrl and imagePath to Firestore
+//               addImageUrlToFirestore(imageUrl, imageRef.path, tempFile.name)
+               Toast.makeText(this, "Uploaded Successfully", Toast.LENGTH_SHORT).show()
+               translateImage(tempFile.name)
+           }
+       }.addOnFailureListener { exception ->
+           // Handle the failure event here
+           Toast.makeText(this, exception.message, Toast.LENGTH_SHORT).show()
+       }
+   }
+    private fun translateImage(fileName: String) {
+        if (! Python.isStarted()) {
+            Python.start(AndroidPlatform(this))
+        }
+        val py = Python.getInstance()
+        val module = py.getModule("client")
+        try {
+            val prediction = module.callAttr("translate_image",
+                fileName)
+                .toJava(String::class.java)
+            txtTranslated.text = prediction
+            txtTranslated.textSize = 24f
+
+        } catch (e: PyException) {
+            Toast.makeText(this, e.message, Toast.LENGTH_LONG).show()
+        }
+    }
     private fun askCameraPermissions() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA), cameraRequestCode)
@@ -68,7 +124,6 @@ class Image2Text : AppCompatActivity() {
             dispatchTakePictureIntent()
         }
     }
-
      override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
          super.onRequestPermissionsResult(requestCode, permissions, grantResults)
          if (requestCode == cameraRequestCode) {
@@ -79,7 +134,6 @@ class Image2Text : AppCompatActivity() {
             }
         }
     }
-
     @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -94,21 +148,18 @@ class Image2Text : AppCompatActivity() {
             this.sendBroadcast(mediaScanIntent)
         }
         if (requestCode == galleryRequestCode && resultCode == RESULT_OK) {
-            val contentUri: Uri? = data?.data
+            val contentUri = data?.data
             val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
             val imageFileName = "JPEG_${timeStamp}.${getFileExt(contentUri)}"
             Log.d("tag", "Gallery Image Uri $imageFileName")
             selectedImage.setImageURI(contentUri)
         }
     }
-
     private fun getFileExt(contentUri: Uri?): String {
         val c: ContentResolver = contentResolver
         val mime: MimeTypeMap = MimeTypeMap.getSingleton()
         return mime.getExtensionFromMimeType(contentUri?.let { c.getType(it) }).toString()
     }
-
-
     private fun dispatchTakePictureIntent() {
         val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         // Ensure that there's a camera activity to handle the intent
@@ -129,7 +180,6 @@ class Image2Text : AppCompatActivity() {
             }
         }
     }
-
     private fun createImageFile(): File {
         // Create an image file name
         val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
@@ -145,3 +195,18 @@ class Image2Text : AppCompatActivity() {
         return image
     }
 }
+
+//private fun addImageUrlToFirestore(imageUrl: String, imagePath: String, fileName: String) {
+//    val firestore = FirebaseFirestore.getInstance()
+//    val data = hashMapOf(
+//        "imageUrl" to imageUrl,
+//        "imagePath" to imagePath // Add the image path to Firestore
+//    )
+//    firestore.collection("images")
+//        .add(data)
+//        .addOnSuccessListener { documentReference ->
+//            val documentId = documentReference.id
+//            Log.d("tag","Document ID : $documentId" )
+//            // Use the documentId as needed
+//        }
+//}
