@@ -68,12 +68,35 @@ class Image2Text : AppCompatActivity() {
             val gallery = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
             startActivityForResult(gallery, galleryRequestCode)
         }
+
+        val txt2speechButton = findViewById<ImageView>(R.id.out_voice_button)
+        txt2speechButton.setOnClickListener {
+            txt2speech(txtTranslated.text.toString())
+        }
+
         val transBtn = findViewById<Button>(R.id.trans_button)
         transBtn.setOnClickListener {
             uploadImage(selectedImage)
         }
     }
-   private fun uploadImage(imageView: ImageView) {
+
+    private fun txt2speech(txtTranslated: String) {
+        if (! Python.isStarted()) {
+            Python.start(AndroidPlatform(this))
+        }
+        val py = Python.getInstance()
+        val module = py.getModule("client")
+        try {
+            val speech = module.callAttr("txt2speech", txtTranslated)
+                .toJava(String::class.java)
+
+        } catch (e: PyException) {
+            Toast.makeText(this, e.message, Toast.LENGTH_LONG).show()
+        }
+
+    }
+
+    private fun uploadImage(imageView: ImageView) {
        imageView.buildDrawingCache()
        val bitmap = imageView.drawingCache
        val tempFile = File.createTempFile("image", ".jpg")
