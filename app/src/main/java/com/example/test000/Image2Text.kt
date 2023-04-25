@@ -13,6 +13,7 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Environment
+import android.speech.tts.TextToSpeech
 import android.util.Log
 import android.webkit.MimeTypeMap
 import android.widget.ImageButton
@@ -25,7 +26,6 @@ import androidx.core.content.FileProvider
 import com.chaquo.python.PyException
 import com.chaquo.python.Python
 import com.chaquo.python.android.AndroidPlatform
-import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import java.io.File
 import java.io.FileOutputStream
@@ -41,13 +41,22 @@ class Image2Text : AppCompatActivity() {
     private lateinit var currentPhotoPath : String
     private lateinit var selectedImage : ImageView
     private lateinit var txtTranslated : TextView
+    private lateinit var tts: TextToSpeech
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_image2text)
 
+        tts = TextToSpeech(applicationContext) { status ->
+            if (status != TextToSpeech.ERROR) {
+                // Set language for TextToSpeech
+                tts.language = Locale.US
+            }
+        }
+
         selectedImage = findViewById(R.id.imageView)
         txtTranslated = findViewById(R.id.out_trans_text)
+
 
         val button1 = findViewById<Button>(R.id.switch_button)
         button1.setOnClickListener {
@@ -71,7 +80,8 @@ class Image2Text : AppCompatActivity() {
 
         val txt2speechButton = findViewById<ImageView>(R.id.out_voice_button)
         txt2speechButton.setOnClickListener {
-            txt2speech(txtTranslated.text.toString())
+
+            tts.speak((txtTranslated.text), TextToSpeech.QUEUE_FLUSH, null, null)
         }
 
         val transBtn = findViewById<Button>(R.id.trans_button)
@@ -79,21 +89,11 @@ class Image2Text : AppCompatActivity() {
             uploadImage(selectedImage)
         }
     }
-
-    private fun txt2speech(txtTranslated: String) {
-        if (! Python.isStarted()) {
-            Python.start(AndroidPlatform(this))
-        }
-        val py = Python.getInstance()
-        val module = py.getModule("client")
-        try {
-            val speech = module.callAttr("txt2speech", txtTranslated)
-                .toJava(String::class.java)
-
-        } catch (e: PyException) {
-            Toast.makeText(this, e.message, Toast.LENGTH_LONG).show()
-        }
-
+    override fun onDestroy() {
+        // Shut down TextToSpeech when the activity is destroyed
+        tts.stop()
+        tts.shutdown()
+        super.onDestroy()
     }
 
     private fun uploadImage(imageView: ImageView) {
@@ -219,6 +219,7 @@ class Image2Text : AppCompatActivity() {
         return image
     }
 }
+
 
 //private fun addImageUrlToFirestore(imageUrl: String, imagePath: String, fileName: String) {
 //    val firestore = FirebaseFirestore.getInstance()

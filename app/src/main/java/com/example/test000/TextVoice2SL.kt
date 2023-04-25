@@ -46,6 +46,7 @@ class TextVoice2SL : AppCompatActivity() {
     private fun transText(editText: EditText) {
         val firestore = FirebaseFirestore.getInstance() // Replace with your actual Firestore reference
         val userInput = editText.text.toString()
+        val wordsList = userInput.split("\\s+".toRegex())
 
         // Create a query to search for the value in a specific collection
         val documentRef = firestore.collection("English_Videos").document("Videos")

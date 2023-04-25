@@ -1,6 +1,7 @@
 import requests
 
 
+
 def translate_image(file_name):
     s = requests.Session()
 
@@ -20,8 +21,3 @@ def statement2words_Ar(statement):
     r = s.get("http://192.168.1.5:8000/statment2words_Ar/", params={'statement': statement})
     return r.json()['words']
 
-
-def txt2speech(text):
-    s = requests.Session()
-    r = s.get("http://192.168.1.5:8000/txt2speech/", params={'text': text})
-    return r.json()['voice']
