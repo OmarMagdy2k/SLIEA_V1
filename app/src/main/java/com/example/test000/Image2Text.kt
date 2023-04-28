@@ -42,10 +42,19 @@ class Image2Text : AppCompatActivity() {
     private lateinit var selectedImage : ImageView
     private lateinit var txtTranslated : TextView
     private lateinit var tts: TextToSpeech
+    private lateinit var prediction : String
+    private var translationLanguage: String = "En" // default to "en" if intent extra is not available
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_image2text)
+
+
+        // Check if the intent contains an extra with key "translationLanguage"
+        if (intent.hasExtra("translationLanguage")) {
+            translationLanguage = intent.getStringExtra("translationLanguage")!!
+        }
 
         tts = TextToSpeech(applicationContext) { status ->
             if (status != TextToSpeech.ERROR) {
@@ -111,12 +120,9 @@ class Image2Text : AppCompatActivity() {
 
        uploadTask.addOnSuccessListener { taskSnapshot ->
            // File uploaded successfully, get the download URL
-           taskSnapshot.metadata?.reference?.downloadUrl?.addOnSuccessListener { uri ->
+           taskSnapshot.metadata?.reference?.downloadUrl?.addOnSuccessListener { _ ->
                val fileName = tempFile.name
                translateImage(fileName)
-                //val imageUrl = uri.toString()
-                // Add the imageUrl and imagePath to Firestore
-                //addImageUrlToFirestore(imageUrl, imageRef.path, tempFile.name)
                 //Toast.makeText(this, "Uploaded Successfully", Toast.LENGTH_SHORT).show()
            }
        }.addOnFailureListener { exception ->
@@ -130,11 +136,16 @@ class Image2Text : AppCompatActivity() {
         }
         val py = Python.getInstance()
         val module = py.getModule("client")
-        try {
-            val prediction = module.callAttr("translate_image", fileName)
-                .toJava(String::class.java)
-            txtTranslated.post { // using txtTranslated.post to update TextView in UI thread
-                txtTranslated.text = prediction
+            try {
+                if(translationLanguage == "En"){
+                    prediction = module.callAttr("translate_image_En", fileName)
+                    .toJava(String::class.java)
+                }else if(translationLanguage == "Ar"){
+                    prediction = module.callAttr("translate_image_Ar", fileName)
+                        .toJava(String::class.java)
+                }
+                txtTranslated.post { // using txtTranslated.post to update TextView in UI thread
+                    txtTranslated.text = prediction
             }
         } catch (e: PyException) {
             Toast.makeText(this, e.message, Toast.LENGTH_LONG).show()
@@ -219,19 +230,3 @@ class Image2Text : AppCompatActivity() {
         return image
     }
 }
-
-
-//private fun addImageUrlToFirestore(imageUrl: String, imagePath: String, fileName: String) {
-//    val firestore = FirebaseFirestore.getInstance()
-//    val data = hashMapOf(
-//        "imageUrl" to imageUrl,
-//        "imagePath" to imagePath // Add the image path to Firestore
-//    )
-//    firestore.collection("images")
-//        .add(data)
-//        .addOnSuccessListener { documentReference ->
-//            val documentId = documentReference.id
-//            Log.d("tag","Document ID : $documentId" )
-//            // Use the documentId as needed
-//        }
-//}

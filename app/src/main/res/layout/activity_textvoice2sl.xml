@@ -50,17 +50,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-<!--    <androidx.constraintlayout.utils.widget.ImageFilterButton-->
-<!--        android:id="@+id/micButton"-->
-<!--        android:layout_width="57dp"-->
-<!--        android:layout_height="48dp"-->
-<!--        android:background="#1563D8"-->
-<!--        android:soundEffectsEnabled="true"-->
-<!--        app:layout_constraintBottom_toTopOf="@+id/trans_button"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:srcCompat="@mipmap/ic_mic_foreground"-->
-<!--        android:contentDescription="@string/recoder"-->
-<!--        />-->
+
+
 
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="340dp"
@@ -81,7 +72,20 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         android:textSize="20sp"
         app:layout_constraintBottom_toTopOf="@+id/trans_button"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/micButton"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageButton
+        android:id="@+id/micButton"
+        android:layout_width="57dp"
+        android:layout_height="48dp"
+        android:background="#1563D8"
+        android:soundEffectsEnabled="true"
+        app:layout_constraintBottom_toTopOf="@+id/trans_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@mipmap/ic_mic_foreground"
+        tools:layout_editor_absoluteX="143dp"
+        tools:layout_editor_absoluteY="554dp"
+        android:contentDescription="@string/recoder"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
