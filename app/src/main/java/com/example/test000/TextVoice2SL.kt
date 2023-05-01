@@ -180,14 +180,14 @@ class TextVoice2SL : AppCompatActivity() {
                     // There are downloads still in progress
                     cursor.close()
                     // Poll again after a delay
-                    handler.postDelayed(this, 2000) // Poll every 3 second (adjust as needed)
+                    handler.postDelayed(this, 2000) // Poll every 2 second (adjust as needed)
                 } else {
                     // All downloads are complete
                     cursor.close()
                     openVideo(fileName) // call openVideo function here
                 }
             }
-        }, 2000) // Delay the first poll by 3 second (adjust as needed)
+        }, 2000) // Delay the first poll by 2 second (adjust as needed)
     }
 
 
