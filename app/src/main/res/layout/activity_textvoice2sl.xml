@@ -64,6 +64,8 @@
         android:id="@+id/editTextTextMultiLine"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:autoLink="web|phone|email"
+        android:autoText="true"
         android:backgroundTint="#1563D8"
         android:ems="10"
         android:gravity="start|top"
