@@ -24,6 +24,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import com.chaquo.python.PyException
+import com.chaquo.python.PyObject
 import com.chaquo.python.Python
 import com.chaquo.python.android.AndroidPlatform
 import com.google.firebase.storage.FirebaseStorage
@@ -135,7 +136,7 @@ class Image2Text : AppCompatActivity() {
             Python.start(AndroidPlatform(this))
         }
         val py = Python.getInstance()
-        val module = py.getModule("client")
+        val module: PyObject = py.getModule("client")
             try {
                 if(translationLanguage == "En"){
                     prediction = module.callAttr("translate_image_En", fileName)
