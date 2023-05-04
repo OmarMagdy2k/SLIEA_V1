@@ -132,21 +132,21 @@ class Image2Text : AppCompatActivity() {
        }
    }
     private fun translateImage(fileName: String) {
-        if (! Python.isStarted()) {
+        if (!Python.isStarted()) {
             Python.start(AndroidPlatform(this))
         }
         val py = Python.getInstance()
         val module: PyObject = py.getModule("client")
-            try {
-                if(translationLanguage == "En"){
-                    prediction = module.callAttr("translate_image_En", fileName)
+        try {
+            if (translationLanguage == "En") {
+                prediction = module.callAttr("translate_image_En", fileName)
                     .toJava(String::class.java)
-                }else if(translationLanguage == "Ar"){
-                    prediction = module.callAttr("translate_image_Ar", fileName)
-                        .toJava(String::class.java)
-                }
-                txtTranslated.post { // using txtTranslated.post to update TextView in UI thread
-                    txtTranslated.text = prediction
+            } else if (translationLanguage == "Ar") {
+                prediction = module.callAttr("translate_image_Ar", fileName)
+                    .toJava(String::class.java)
+            }
+            txtTranslated.post { // using txtTranslated.post to update TextView in UI thread
+                txtTranslated.text = prediction
             }
         } catch (e: PyException) {
             Toast.makeText(this, e.message, Toast.LENGTH_LONG).show()
