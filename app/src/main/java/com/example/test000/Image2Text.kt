@@ -11,6 +11,7 @@ import android.widget.Button
 import android.widget.ImageView
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Environment
 import android.speech.tts.TextToSpeech
@@ -30,6 +31,7 @@ import com.chaquo.python.android.AndroidPlatform
 import com.google.firebase.storage.FirebaseStorage
 import java.io.File
 import java.io.FileOutputStream
+import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.Date
@@ -45,6 +47,7 @@ class Image2Text : AppCompatActivity() {
     private lateinit var tts: TextToSpeech
     private lateinit var prediction : String
     private var translationLanguage: String = "En" // default to "en" if intent extra is not available
+    private val REQUEST_IMAGE_CAPTURE = 1
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -64,9 +67,8 @@ class Image2Text : AppCompatActivity() {
             }
         }
 
-        selectedImage = findViewById(R.id.imageView)
         txtTranslated = findViewById(R.id.out_trans_text)
-
+        selectedImage = findViewById(R.id.imageView)
 
         val button1 = findViewById<Button>(R.id.switch_button)
         button1.setOnClickListener {
@@ -107,30 +109,34 @@ class Image2Text : AppCompatActivity() {
     }
 
     private fun uploadImage(imageView: ImageView) {
-       imageView.buildDrawingCache()
-       val bitmap = imageView.drawingCache
-       val tempFile = File.createTempFile("image", ".jpg")
-       val outputStream = FileOutputStream(tempFile)
-       bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
-       outputStream.flush()
-       outputStream.close()
-       val storageRef = FirebaseStorage.getInstance().reference
-       val imageRef = storageRef.child("images/${tempFile.name}")
+        imageView.drawable?.let { drawable ->
+            val bitmap = (drawable as BitmapDrawable).bitmap
+            val tempFile = File.createTempFile("image", ".jpg")
+            val outputStream = FileOutputStream(tempFile)
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
+            outputStream.flush()
+            outputStream.close()
+            val storageRef = FirebaseStorage.getInstance().reference
+            val imageRef = storageRef.child("images/${tempFile.name}")
 
-       val uploadTask = imageRef.putFile(Uri.fromFile(tempFile))
+            val uploadTask = imageRef.putFile(Uri.fromFile(tempFile))
 
-       uploadTask.addOnSuccessListener { taskSnapshot ->
-           // File uploaded successfully, get the download URL
-           taskSnapshot.metadata?.reference?.downloadUrl?.addOnSuccessListener { _ ->
-               val fileName = tempFile.name
-               translateImage(fileName)
-                //Toast.makeText(this, "Uploaded Successfully", Toast.LENGTH_SHORT).show()
-           }
-       }.addOnFailureListener { exception ->
-           // Handle the failure event here
-           Toast.makeText(this, exception.message, Toast.LENGTH_SHORT).show()
-       }
-   }
+            uploadTask.addOnSuccessListener { taskSnapshot ->
+                // File uploaded successfully, get the download URL
+                taskSnapshot.metadata?.reference?.downloadUrl?.addOnSuccessListener {
+                    val fileName = tempFile.name
+                    translateImage(fileName)
+                    selectedImage.setImageBitmap(bitmap) // set the bitmap to selectedImage
+                    //Toast.makeText(this, "Uploaded Successfully", Toast.LENGTH_SHORT).show()
+                }
+            }.addOnFailureListener { exception ->
+                // Handle the failure event here
+                Toast.makeText(this, exception.message, Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+
     private fun translateImage(fileName: String) {
         if (!Python.isStarted()) {
             Python.start(AndroidPlatform(this))
@@ -196,38 +202,44 @@ class Image2Text : AppCompatActivity() {
         val mime: MimeTypeMap = MimeTypeMap.getSingleton()
         return mime.getExtensionFromMimeType(contentUri?.let { c.getType(it) }).toString()
     }
+
     private fun dispatchTakePictureIntent() {
-        val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        // Ensure that there's a camera activity to handle the intent
-        if (takePictureIntent.resolveActivity(packageManager) != null) {
-            // Create the File where the photo should go
-            var photoFile: File? = null
-            try {
-                photoFile = createImageFile()
-            } catch (ex: Exception) {
-                // handle exception
-            }
-            if (photoFile != null) {
-                val photoURI = FileProvider.getUriForFile(this,
-                    "com.example.android.fileprovider",
-                    photoFile)
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
-                startActivityForResult(takePictureIntent, cameraRequestCode)
+        Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
+            // Ensure that there's a camera activity to handle the intent
+            takePictureIntent.resolveActivity(packageManager)?.also {
+                // Create the File where the photo should go
+                val photoFile: File? = try {
+                    createImageFile()
+                } catch (ex: IOException) {
+                    // Error occurred while creating the File
+                    null
+                }
+                // Continue only if the File was successfully created
+                photoFile?.also {
+                    val photoURI: Uri = FileProvider.getUriForFile(
+                        this,
+                        "com.example.test000.provider",
+                        it
+                    )
+                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
+                    startActivityForResult(takePictureIntent, cameraRequestCode)
+                }
             }
         }
     }
+
+
     private fun createImageFile(): File {
         // Create an image file name
-        val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
-
-        val imageFileName = "JPEG_$timeStamp"
-        val storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
-        val image = File.createTempFile(
-            imageFileName,
+        val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
+        val storageDir: File? = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        return File.createTempFile(
+            "JPEG_${timeStamp}_",
             ".jpg",
             storageDir
-        )
-        currentPhotoPath = image.absolutePath
-        return image
+        ).apply {
+            // Save a file: path for use with ACTION_VIEW intents
+            currentPhotoPath = absolutePath
+        }
     }
 }
