@@ -64,6 +64,11 @@ class TextVoice2SL : AppCompatActivity() {
                 startSpeechToText(editText)
                 Toast.makeText(this, "Start Listening", Toast.LENGTH_SHORT).show()
         }
+
+        val replayBtn = findViewById<ImageButton>(R.id.replayButton)
+        replayBtn.setOnClickListener {
+
+        }
     }
 
     private fun startSpeechToText(editText: EditText) {

@@ -21,5 +21,6 @@
     <string name="open_video">open video</string>
     <string name="recoder">recoder</string>
     <string name="image_view">Image View</string>
+    <string name="replay">Replay</string>
 
 </resources>

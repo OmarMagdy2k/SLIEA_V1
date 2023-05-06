@@ -42,18 +42,19 @@
         android:id="@+id/trans_button"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="3dp"
+        android:layout_marginEnd="3dp"
         android:fontFamily="sans-serif-medium"
         android:text="@string/translate"
         android:textSize="15sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-
+        app:layout_constraintStart_toEndOf="@+id/replayButton" />
 
 
     <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/textInputLayout"
         android:layout_width="340dp"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toTopOf="@+id/trans_button"
@@ -64,8 +65,9 @@
         android:id="@+id/editTextTextMultiLine"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="3dp"
+        android:layout_marginEnd="3dp"
         android:autoLink="web|phone|email"
-        android:autoText="true"
         android:backgroundTint="#1563D8"
         android:ems="10"
         android:gravity="start|top"
@@ -73,21 +75,34 @@
         android:inputType="textMultiLine"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         android:textSize="20sp"
-        app:layout_constraintBottom_toTopOf="@+id/trans_button"
+        app:layout_constraintBottom_toBottomOf="@+id/textInputLayout"
         app:layout_constraintEnd_toStartOf="@+id/micButton"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent" />
 
     <ImageButton
         android:id="@+id/micButton"
         android:layout_width="57dp"
         android:layout_height="48dp"
+        android:layout_marginEnd="3dp"
         android:background="#1563D8"
+        android:contentDescription="@string/recoder"
         android:soundEffectsEnabled="true"
-        app:layout_constraintBottom_toTopOf="@+id/trans_button"
+        app:layout_constraintBottom_toBottomOf="@+id/textInputLayout"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@mipmap/ic_mic_foreground"
-        tools:layout_editor_absoluteX="143dp"
-        tools:layout_editor_absoluteY="554dp"
-        android:contentDescription="@string/recoder"/>
+        app:srcCompat="@mipmap/ic_mic_foreground" />
+
+    <ImageButton
+        android:id="@+id/replayButton"
+        android:layout_width="48dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="3dp"
+        android:layout_marginBottom="5dp"
+        android:background="#1563D8"
+        android:contentDescription="@string/replay"
+        android:soundEffectsEnabled="true"
+        android:src="@mipmap/ic_replay_foreground"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
