@@ -7,7 +7,7 @@ import android.widget.RadioGroup
 import androidx.appcompat.app.AppCompatActivity
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var translationLanguage: String
+    private var translationLanguage: String? = null
     private var processSelected = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,6 +29,7 @@ class MainActivity : AppCompatActivity() {
             }
             updateConfirmButtonState(confirmButton)
         }
+
         val processGroup = findViewById<RadioGroup>(R.id.processGroup)
         processGroup.setOnCheckedChangeListener { _, _ ->
             processSelected = true
@@ -36,22 +37,24 @@ class MainActivity : AppCompatActivity() {
         }
 
         confirmButton.setOnClickListener {
-            val intent = when (processGroup.checkedRadioButtonId) {
-                R.id.vt2slButton -> {
-                    Intent(this, TextVoice2SL::class.java)
+            if (translationLanguage != null && processSelected) {
+                val intent = when (processGroup.checkedRadioButtonId) {
+                    R.id.vt2slButton -> {
+                        Intent(this, TextVoice2SL::class.java)
+                    }
+                    R.id.slv2vtButton -> {
+                        Intent(this, Video2Text::class.java)
+                    }
+                    R.id.slp2vtButton -> {
+                        Intent(this, Image2Text::class.java)
+                    }
+                    else -> null
                 }
-                R.id.slv2vtButton -> {
-                    Intent(this, Video2Text::class.java)
-                }
-                R.id.slp2vtButton -> {
-                    Intent(this, Image2Text::class.java)
-                }
-                else -> null
+                intent?.putExtra("translationLanguage", translationLanguage)
+                startActivity(intent)
             }
-            intent?.putExtra("translationLanguage", translationLanguage)
-            startActivity(intent)
-                }
-            }
+        }
+    }
 
     private fun updateConfirmButtonState(confirmButton:Button) {
         confirmButton.isEnabled = translationLanguage != null && processSelected
