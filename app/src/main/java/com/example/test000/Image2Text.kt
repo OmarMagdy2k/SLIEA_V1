@@ -47,7 +47,6 @@ class Image2Text : AppCompatActivity() {
     private lateinit var tts: TextToSpeech
     private lateinit var prediction : String
     private var translationLanguage: String = "En" // default to "en" if intent extra is not available
-    private val REQUEST_IMAGE_CAPTURE = 1
 
 
     override fun onCreate(savedInstanceState: Bundle?) {

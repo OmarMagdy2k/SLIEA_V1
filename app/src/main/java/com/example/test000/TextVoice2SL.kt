@@ -122,7 +122,8 @@ class TextVoice2SL : AppCompatActivity() {
     }
 
     private fun transText(editText:EditText ) {
-        val userInput = editText.text.toString()
+        val userInput = editText.text.toString().lowercase()
+
         val wordsList = userInput.split("\\s+".toRegex())
 
         val firestore = FirebaseFirestore.getInstance() // Replace with your actual Firestore reference
@@ -186,19 +187,19 @@ class TextVoice2SL : AppCompatActivity() {
                     // There are downloads still in progress
                     cursor.close()
                     // Poll again after a delay
-                    handler.postDelayed(this, 1500) // Poll every 2 second (adjust as needed)
+                    handler.postDelayed(this, 1000) // Poll every 1 second (adjust as needed)
                 } else {
                     // All downloads are complete
                     cursor.close()
                     openVideo(fileName) // call openVideo function here
                 }
             }
-        }, 1500) // Delay the first poll by 2 second (adjust as needed)
+        }, 1000) // Delay the first poll by 1 second (adjust as needed)
     }
     private fun openVideo(fileName: String) {
         val videoView = findViewById<VideoView>(R.id.graphic_videoView)
         val videoFiles = mutableListOf<File>()
-        for (index in 1..100) {
+        for (index in 1..200) {
             val videoFile = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "${fileName}_$index.mp4")
             if (videoFile.exists()) {
                 videoFiles.add(videoFile)
