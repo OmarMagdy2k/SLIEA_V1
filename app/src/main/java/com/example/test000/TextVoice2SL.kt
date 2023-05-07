@@ -22,6 +22,10 @@ import java.text.SimpleDateFormat
 import java.util.*
 import okhttp3.*
 import android.Manifest
+import com.chaquo.python.PyException
+import com.chaquo.python.PyObject
+import com.chaquo.python.Python
+import com.chaquo.python.android.AndroidPlatform
 import com.google.firebase.firestore.DocumentReference
 
 
@@ -30,7 +34,8 @@ class TextVoice2SL : AppCompatActivity() {
     private var translationLanguage: String = "En" // default to "en" if intent extra is not available
     private lateinit var documentRef : DocumentReference
     private var storedVideos = mutableListOf<File>()
-
+    private lateinit var correctedStatement : String
+    private lateinit var wordsList : List<String>
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_textvoice2sl)
@@ -55,6 +60,7 @@ class TextVoice2SL : AppCompatActivity() {
         }
 
         val editText = findViewById<EditText>(R.id.editTextTextMultiLine)
+
         val transButton = findViewById<Button>(R.id.trans_button)
         transButton.setOnClickListener {
             transText(editText)
@@ -123,9 +129,24 @@ class TextVoice2SL : AppCompatActivity() {
 
     private fun transText(editText:EditText ) {
         val userInput = editText.text.toString().lowercase()
+        if(translationLanguage == "En"){
+            if (!Python.isStarted()) {
+                Python.start(AndroidPlatform(this))
+            }
+            val py = Python.getInstance()
+            val module: PyObject = py.getModule("client")
+            try {
+                correctedStatement = module.callAttr("autocorrect_En", userInput)
+                    .toJava(String::class.java)
+                editText.setText(correctedStatement)
 
-        val wordsList = userInput.split("\\s+".toRegex())
-
+            } catch (e: PyException) {
+                Toast.makeText(this, e.message, Toast.LENGTH_LONG).show()
+            }
+            wordsList = correctedStatement.split("\\s+".toRegex())
+        } else if (translationLanguage == "Ar"){
+            wordsList = userInput.split("\\s+".toRegex())
+        }
         val firestore = FirebaseFirestore.getInstance() // Replace with your actual Firestore reference
 
         // Create a query to search for the value in a specific collection
