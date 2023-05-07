@@ -29,6 +29,7 @@ class TextVoice2SL : AppCompatActivity() {
     private val handler = Handler()
     private var translationLanguage: String = "En" // default to "en" if intent extra is not available
     private lateinit var documentRef : DocumentReference
+    private var storedVideos = mutableListOf<File>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,7 +68,7 @@ class TextVoice2SL : AppCompatActivity() {
 
         val replayBtn = findViewById<ImageButton>(R.id.replayButton)
         replayBtn.setOnClickListener {
-
+            replayVideo(storedVideos)
         }
     }
 
@@ -185,24 +186,23 @@ class TextVoice2SL : AppCompatActivity() {
                     // There are downloads still in progress
                     cursor.close()
                     // Poll again after a delay
-                    handler.postDelayed(this, 2000) // Poll every 2 second (adjust as needed)
+                    handler.postDelayed(this, 1500) // Poll every 2 second (adjust as needed)
                 } else {
                     // All downloads are complete
                     cursor.close()
                     openVideo(fileName) // call openVideo function here
                 }
             }
-        }, 2000) // Delay the first poll by 2 second (adjust as needed)
+        }, 1500) // Delay the first poll by 2 second (adjust as needed)
     }
-
-
     private fun openVideo(fileName: String) {
         val videoView = findViewById<VideoView>(R.id.graphic_videoView)
         val videoFiles = mutableListOf<File>()
-        for (index in 1..10) {
+        for (index in 1..100) {
             val videoFile = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "${fileName}_$index.mp4")
             if (videoFile.exists()) {
                 videoFiles.add(videoFile)
+                storedVideos.add(videoFile)
             }
         }
         if (videoFiles.isNotEmpty()) {
@@ -213,7 +213,7 @@ class TextVoice2SL : AppCompatActivity() {
             val videoUri = Uri.parse(videoFiles[0].absolutePath)
             videoView.setVideoURI(videoUri)
             videoView.requestFocus() // Request focus for the VideoView
-            videoView.setOnCompletionListener { mp ->
+            videoView.setOnCompletionListener {
                 // Remove the first video file from the list
                 videoFiles.removeAt(0)
                 if (videoFiles.isNotEmpty()) {
@@ -226,6 +226,31 @@ class TextVoice2SL : AppCompatActivity() {
             videoView.start()
         } else {
             //Toast.makeText(this, "No video files found", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun replayVideo(storedVideo: List<File>) {
+        val videoView = findViewById<VideoView>(R.id.graphic_videoView)
+        if (storedVideo.isNotEmpty()) {
+            var index = 0
+            val mediaController = MediaController(this)
+            mediaController.setAnchorView(videoView)
+            videoView.setMediaController(mediaController)
+            val videoUri = Uri.parse(storedVideo[index].absolutePath)
+            videoView.setVideoURI(videoUri)
+            videoView.requestFocus()
+            videoView.setOnCompletionListener {
+                index++
+                if (index < storedVideo.size) {
+                    val nextVideoUri = Uri.parse(storedVideo[index].absolutePath)
+                    videoView.setVideoURI(nextVideoUri)
+                    videoView.start()
+                }
+            }
+            // only start the video here once all listeners have been set up
+            videoView.start()
+        } else {
+            // Toast.makeText(this, "No video files found", Toast.LENGTH_SHORT).show()
         }
     }
 }
