@@ -15,7 +15,6 @@ import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Environment
 import android.speech.tts.TextToSpeech
-import android.util.Log
 import android.webkit.MimeTypeMap
 import android.widget.ImageButton
 import android.widget.TextView
@@ -31,7 +30,6 @@ import com.chaquo.python.android.AndroidPlatform
 import com.google.firebase.storage.FirebaseStorage
 import java.io.File
 import java.io.FileOutputStream
-import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.Date
@@ -181,7 +179,6 @@ class Image2Text : AppCompatActivity() {
         if (requestCode == cameraRequestCode && resultCode == RESULT_OK) {
             val f = File(currentPhotoPath)
             selectedImage.setImageURI(Uri.fromFile(f))
-            Log.d("tag", "Absolute Url ${Uri.fromFile(f)}")
 
             val mediaScanIntent = Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE)
             val contentUri = Uri.fromFile(f)
@@ -192,7 +189,6 @@ class Image2Text : AppCompatActivity() {
             val contentUri = data?.data
             val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
             val imageFileName = "JPEG_${timeStamp}.${getFileExt(contentUri)}"
-            Log.d("tag", "Gallery Image Uri $imageFileName")
             selectedImage.setImageURI(contentUri)
         }
     }
