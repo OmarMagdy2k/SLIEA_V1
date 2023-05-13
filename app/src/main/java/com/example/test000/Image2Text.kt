@@ -87,7 +87,7 @@ class Image2Text : AppCompatActivity() {
             startActivityForResult(gallery, galleryRequestCode)
         }
 
-        val txt2speechButton = findViewById<ImageView>(R.id.out_voice_button)
+        val txt2speechButton = findViewById<ImageButton>(R.id.out_voice_button)
         txt2speechButton.setOnClickListener {
 
             tts.speak((txtTranslated.text), TextToSpeech.QUEUE_FLUSH, null, null)

@@ -22,5 +22,8 @@
     <string name="recoder">recoder</string>
     <string name="image_view">Image View</string>
     <string name="replay">Replay</string>
+    <string name="previous">Previous</string>
+    <string name="next">Next</string>
+    <string name="images_view">Images View</string>
 
 </resources>
