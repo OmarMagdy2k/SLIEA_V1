@@ -59,8 +59,13 @@ class Image2Text : AppCompatActivity() {
 
         tts = TextToSpeech(applicationContext) { status ->
             if (status != TextToSpeech.ERROR) {
-                // Set language for TextToSpeech
-                tts.language = Locale.US
+                if (translationLanguage == "En") {
+                    // Set language for TextToSpeech
+                    tts.language = Locale.US
+                }
+                else if (translationLanguage == "Ar"){
+                    tts.language = Locale("ar")
+                }
             }
         }
 
