@@ -32,7 +32,7 @@
         android:id="@+id/out_trans_text"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="@string/translation_of_the_video_will_be_here"
+        android:text="@string/translation_of_the_image"
         app:layout_constraintBottom_toTopOf="@+id/trans_button"
         app:layout_constraintEnd_toEndOf="parent"
         android:textSize = "20sp"

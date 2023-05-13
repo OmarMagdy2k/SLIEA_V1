@@ -192,8 +192,8 @@ class Image2Text : AppCompatActivity() {
         }
         if (requestCode == galleryRequestCode && resultCode == RESULT_OK) {
             val contentUri = data?.data
-            val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
-            val imageFileName = "JPEG_${timeStamp}.${getFileExt(contentUri)}"
+//            val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
+//            val imageFileName = "JPEG_${timeStamp}.${getFileExt(contentUri)}"
             selectedImage.setImageURI(contentUri)
         }
     }
