@@ -2,7 +2,6 @@ package com.example.test000
 
 
 import android.Manifest
-import android.content.ContentResolver
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -15,7 +14,6 @@ import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Environment
 import android.speech.tts.TextToSpeech
-import android.webkit.MimeTypeMap
 import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
@@ -41,6 +39,7 @@ class Image2Text : AppCompatActivity() {
     private var galleryRequestCode : Int = 122
     private lateinit var currentPhotoPath : String
     private lateinit var selectedImage : ImageView
+    private lateinit var imageUris : MutableList<Uri>
     private lateinit var txtTranslated : TextView
     private lateinit var tts: TextToSpeech
     private lateinit var prediction : String
@@ -89,6 +88,10 @@ class Image2Text : AppCompatActivity() {
         val galleryBtn = findViewById<ImageButton>(R.id.galleryButton)
         galleryBtn.setOnClickListener {
             val gallery = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+            // New Code For Multiple images
+            gallery.type = "image/*"
+            gallery.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+            ////////////////////////
             startActivityForResult(gallery, galleryRequestCode)
         }
 
@@ -192,16 +195,30 @@ class Image2Text : AppCompatActivity() {
         }
         if (requestCode == galleryRequestCode && resultCode == RESULT_OK) {
             val contentUri = data?.data
+            // New Code For Multiple images
+            val clipData = data?.clipData
+            if (clipData != null) {
+                for (i in 0 until clipData.itemCount) {
+                    val uri = clipData.getItemAt(i).uri
+                    imageUris.add(uri)
+                }
+            } else {
+                val uri = data?.data
+                if (uri != null) {
+                    imageUris.add(uri)
+                }
+            }
+            ////////////////////////////////
 //            val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
 //            val imageFileName = "JPEG_${timeStamp}.${getFileExt(contentUri)}"
             selectedImage.setImageURI(contentUri)
         }
     }
-    private fun getFileExt(contentUri: Uri?): String {
-        val c: ContentResolver = contentResolver
-        val mime: MimeTypeMap = MimeTypeMap.getSingleton()
-        return mime.getExtensionFromMimeType(contentUri?.let { c.getType(it) }).toString()
-    }
+//    private fun getFileExt(contentUri: Uri?): String {
+//        val c: ContentResolver = contentResolver
+//        val mime: MimeTypeMap = MimeTypeMap.getSingleton()
+//        return mime.getExtensionFromMimeType(contentUri?.let { c.getType(it) }).toString()
+//    }
 
     private fun dispatchTakePictureIntent() {
         val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
