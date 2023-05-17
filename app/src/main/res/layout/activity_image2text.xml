@@ -32,7 +32,7 @@
         android:id="@+id/out_trans_text"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="@string/translation_of_the_image"
+        android:text="@string/translation_of_the_image_s"
         app:layout_constraintBottom_toTopOf="@+id/trans_button"
         app:layout_constraintEnd_toEndOf="parent"
         android:textSize = "20sp"
@@ -85,8 +85,8 @@
         android:contentDescription="@string/open_gallery"
         />
 
-    <ImageView
-        android:id="@+id/imageView"
+    <ImageSwitcher
+        android:id="@+id/imageSwitcher"
         android:layout_width="0dp"
         android:layout_height="495dp"
         app:layout_constraintBottom_toTopOf="@+id/out_trans_text"
@@ -95,7 +95,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.343"
-        android:contentDescription="@string/images_view" />
+        android:contentDescription="@string/image_switcher" />
 
     <Button
         android:id="@+id/previousBtn"
@@ -103,7 +103,7 @@
         android:layout_height="wrap_content"
         android:text="@string/previous"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+        app:layout_constraintTop_toBottomOf="@+id/imageSwitcher" />
 
     <Button
         android:id="@+id/nextBtn"
@@ -111,6 +111,6 @@
         android:layout_height="wrap_content"
         android:text="@string/next"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+        app:layout_constraintTop_toBottomOf="@+id/imageSwitcher" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

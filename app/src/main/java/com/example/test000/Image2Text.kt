@@ -3,20 +3,21 @@ package com.example.test000
 
 import android.Manifest
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
-import android.os.Bundle
-import android.provider.MediaStore
-import android.widget.Button
-import android.widget.ImageView
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
+import android.os.Bundle
 import android.os.Environment
+import android.provider.MediaStore
 import android.speech.tts.TextToSpeech
+import android.widget.Button
 import android.widget.ImageButton
+import android.widget.ImageSwitcher
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.ImageCapture.*
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -30,20 +31,27 @@ import java.io.File
 import java.io.FileOutputStream
 import java.text.SimpleDateFormat
 import java.util.*
-import java.util.Date
 
 
 class Image2Text : AppCompatActivity() {
 
-    private var cameraRequestCode : Int = 123
-    private var galleryRequestCode : Int = 122
-    private lateinit var currentPhotoPath : String
-    private lateinit var selectedImage : ImageView
-    private lateinit var imageUris : MutableList<Uri>
-    private lateinit var txtTranslated : TextView
+    private var cameraRequestCode: Int = 123
+    private var galleryRequestCode: Int = 122
+    private lateinit var txtTranslated: TextView
     private lateinit var tts: TextToSpeech
-    private lateinit var prediction : String
-    private var translationLanguage: String = "En" // default to "en" if intent extra is not available
+    private var translationLanguage: String =
+        "En" // default to "en" if intent extra is not available
+    private lateinit var pythonModule: PyObject
+    private var selectedImages: MutableList<File> = mutableListOf()
+    private lateinit var cameraPhoto: File
+
+    private lateinit var imageSwitcher: ImageSwitcher
+
+    //store uris of picked images
+    private var images: ArrayList<Uri> = ArrayList()
+
+    // current position/index of selected image
+    private var currentImagePosition = 0
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -61,16 +69,14 @@ class Image2Text : AppCompatActivity() {
                 if (translationLanguage == "En") {
                     // Set language for TextToSpeech
                     tts.language = Locale.US
-                }
-                else if (translationLanguage == "Ar"){
+                } else if (translationLanguage == "Ar") {
                     tts.language = Locale("ar")
                 }
             }
         }
 
         txtTranslated = findViewById(R.id.out_trans_text)
-        selectedImage = findViewById(R.id.imageView)
-
+        imageSwitcher = findViewById(R.id.imageSwitcher)
         val button1 = findViewById<Button>(R.id.switch_button)
         button1.setOnClickListener {
             val intent = Intent(this, TextVoice2SL::class.java)
@@ -87,12 +93,11 @@ class Image2Text : AppCompatActivity() {
         }
         val galleryBtn = findViewById<ImageButton>(R.id.galleryButton)
         galleryBtn.setOnClickListener {
-            val gallery = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-            // New Code For Multiple images
-            gallery.type = "image/*"
-            gallery.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
-            ////////////////////////
-            startActivityForResult(gallery, galleryRequestCode)
+            val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
+            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+            intent.addCategory(Intent.CATEGORY_OPENABLE)
+            intent.type = "image/*"
+            startActivityForResult(intent, galleryRequestCode)
         }
 
         val txt2speechButton = findViewById<ImageButton>(R.id.out_voice_button)
@@ -103,9 +108,46 @@ class Image2Text : AppCompatActivity() {
 
         val transBtn = findViewById<Button>(R.id.trans_button)
         transBtn.setOnClickListener {
-            uploadImage(selectedImage)
+            uploadAndTranslateImages()
         }
+
+        val nextBtn = findViewById<Button>(R.id.nextBtn)
+        nextBtn.setOnClickListener {
+            if (currentImagePosition < images.size - 1) {
+                currentImagePosition++
+                imageSwitcher.setImageURI(images[currentImagePosition])
+            } else {
+                //no more images
+                Toast.makeText(this, "No More Images...", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        val prevBtn = findViewById<Button>(R.id.previousBtn)
+        prevBtn.setOnClickListener {
+            if (currentImagePosition > 0) {
+                currentImagePosition--
+                imageSwitcher.setImageURI(images[currentImagePosition])
+            } else {
+                //no more images
+                Toast.makeText(this, "No More Images...", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        imageSwitcher.setFactory { ImageView(this) }
+
+
+        initializePython()
     }
+
+    private fun initializePython() {
+        if (!Python.isStarted()) {
+            Python.start(AndroidPlatform(this))
+        }
+        val py = Python.getInstance()
+        pythonModule = py.getModule("client")
+    }
+
+
     override fun onDestroy() {
         // Shut down TextToSpeech when the activity is destroyed
         tts.stop()
@@ -113,112 +155,127 @@ class Image2Text : AppCompatActivity() {
         super.onDestroy()
     }
 
-    private fun uploadImage(imageView: ImageView) {
-        imageView.drawable?.let { drawable ->
-            val bitmap = (drawable as BitmapDrawable).bitmap
-            val tempFile = File.createTempFile("image", ".jpg")
-            val outputStream = FileOutputStream(tempFile)
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
-            outputStream.flush()
-            outputStream.close()
-            val storageRef = FirebaseStorage.getInstance().reference
-            val imageRef = storageRef.child("images/${tempFile.name}")
-
-            val uploadTask = imageRef.putFile(Uri.fromFile(tempFile))
-
+    private fun uploadAndTranslateImages() {
+        val stringBuilder = StringBuilder()
+        val storageRef = FirebaseStorage.getInstance().reference
+        var index  = 0
+        for (file in selectedImages) {
+            val photoUri = Uri.fromFile(file)
+            val imageRef = storageRef.child("images/${file.name}")
+            val uploadTask = imageRef.putFile(photoUri)
             uploadTask.addOnSuccessListener { taskSnapshot ->
                 // File uploaded successfully, get the download URL
                 taskSnapshot.metadata?.reference?.downloadUrl?.addOnSuccessListener {
-                    val fileName = tempFile.name
-                    translateImage(fileName)
-                    selectedImage.setImageBitmap(bitmap) // set the bitmap to selectedImage
-                    //Toast.makeText(this, "Uploaded Successfully", Toast.LENGTH_SHORT).show()
+                    val fileName = file.name
+                    imageSwitcher.setImageURI(Uri.fromFile(file))
+                    currentImagePosition = index++
+                    val prediction = translateImage(fileName)
+                    stringBuilder.append(prediction)
+                    stringBuilder.append(" ")
+                    txtTranslated.post { // using txtTranslated.post to update TextView in UI thread
+                        txtTranslated.text = stringBuilder.toString()
+                    }
                 }
             }.addOnFailureListener { exception ->
                 // Handle the failure event here
                 Toast.makeText(this, exception.message, Toast.LENGTH_SHORT).show()
             }
         }
+
     }
 
-
-    private fun translateImage(fileName: String) {
-        if (!Python.isStarted()) {
-            Python.start(AndroidPlatform(this))
-        }
-        val py = Python.getInstance()
-        val module: PyObject = py.getModule("client")
+    private fun translateImage(fileName: String): String {
         try {
             if (translationLanguage == "En") {
-                prediction = module.callAttr("translate_image_En", fileName)
+                return pythonModule.callAttr("translate_image_En", fileName)
                     .toJava(String::class.java)
             } else if (translationLanguage == "Ar") {
-                prediction = module.callAttr("translate_image_Ar", fileName)
+                return pythonModule.callAttr("translate_image_Ar", fileName)
                     .toJava(String::class.java)
-            }
-            txtTranslated.post { // using txtTranslated.post to update TextView in UI thread
-                txtTranslated.text = prediction
             }
         } catch (e: PyException) {
             Toast.makeText(this, e.message, Toast.LENGTH_LONG).show()
         }
+        return ""
     }
 
     private fun askCameraPermissions() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA), cameraRequestCode)
+        if (ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.CAMERA
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.CAMERA),
+                cameraRequestCode
+            )
         } else {
             dispatchTakePictureIntent()
         }
     }
-     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-         if (requestCode == cameraRequestCode) {
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == cameraRequestCode) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 dispatchTakePictureIntent()
             } else {
-                Toast.makeText(this, "Camera Permission is Required to Use camera.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    this,
+                    "Camera Permission is Required to Use camera.",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
     }
+
     @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+        selectedImages.clear()
         if (requestCode == cameraRequestCode && resultCode == RESULT_OK) {
-            val f = File(currentPhotoPath)
-            selectedImage.setImageURI(Uri.fromFile(f))
-
+            val contentUri = Uri.fromFile(cameraPhoto)
+            selectedImages.add(cameraPhoto)
             val mediaScanIntent = Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE)
-            val contentUri = Uri.fromFile(f)
             mediaScanIntent.data = contentUri
             this.sendBroadcast(mediaScanIntent)
+            imageSwitcher.setImageURI(contentUri)
         }
         if (requestCode == galleryRequestCode && resultCode == RESULT_OK) {
-            val contentUri = data?.data
-            // New Code For Multiple images
-            val clipData = data?.clipData
-            if (clipData != null) {
-                for (i in 0 until clipData.itemCount) {
-                    val uri = clipData.getItemAt(i).uri
-                    imageUris.add(uri)
+            // if multiple images are selected
+            if (data?.clipData != null) {
+                val count = data.clipData?.itemCount
+                for (i in 0 until count!!) {
+                    val imageUri: Uri = data.clipData?.getItemAt(i)!!.uri
+                    images.add(imageUri)
+                    selectedImages.add(createGalleryImageFile(imageUri))
                 }
-            } else {
-                val uri = data?.data
-                if (uri != null) {
-                    imageUris.add(uri)
-                }
+                imageSwitcher.setImageURI(images[0])
+            } else if (data?.data != null) {
+                // if single image is selected
+                val imageUri: Uri = data.data!!
+                imageSwitcher.setImageURI(imageUri)
+                selectedImages.add(createGalleryImageFile(imageUri))
             }
-            ////////////////////////////////
-//            val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
-//            val imageFileName = "JPEG_${timeStamp}.${getFileExt(contentUri)}"
-            selectedImage.setImageURI(contentUri)
         }
     }
-//    private fun getFileExt(contentUri: Uri?): String {
-//        val c: ContentResolver = contentResolver
-//        val mime: MimeTypeMap = MimeTypeMap.getSingleton()
-//        return mime.getExtensionFromMimeType(contentUri?.let { c.getType(it) }).toString()
-//    }
+
+    private fun createGalleryImageFile(imageUri: Uri): File {
+        val imageView = ImageView(this)
+        imageView.setImageURI(imageUri)
+        val bitmap = (imageView.drawable as BitmapDrawable).bitmap
+        val tempFile = File.createTempFile("image", ".jpg")
+        val outputStream = FileOutputStream(tempFile)
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
+        outputStream.flush()
+        outputStream.close()
+        return tempFile
+    }
 
     private fun dispatchTakePictureIntent() {
         val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
@@ -238,6 +295,7 @@ class Image2Text : AppCompatActivity() {
                     photoFile
                 )
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
+                cameraPhoto = photoFile
                 startActivityForResult(takePictureIntent, cameraRequestCode)
             }
         }
@@ -245,15 +303,13 @@ class Image2Text : AppCompatActivity() {
 
     private fun createImageFile(): File {
         // Create an image file name
-        val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
+        val timeStamp: String =
+            SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
         val storageDir: File? = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
         return File.createTempFile(
             "JPEG_${timeStamp}_",
             ".jpg",
             storageDir
-        ).apply {
-            // Save a file: path for use with ACTION_VIEW intents
-            currentPhotoPath = absolutePath
-        }
+        )
     }
 }

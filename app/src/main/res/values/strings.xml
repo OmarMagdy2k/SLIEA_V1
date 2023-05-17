@@ -26,5 +26,7 @@
     <string name="next">Next</string>
     <string name="images_view">Images View</string>
     <string name="translation_of_the_image">Translation of The Image</string>
+    <string name="image_switcher">Image Switcher</string>
+    <string name="translation_of_the_image_s">Translation of The Image(s)</string>
 
 </resources>
