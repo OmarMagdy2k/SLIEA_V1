@@ -156,9 +156,10 @@ class Image2Text : AppCompatActivity() {
     }
 
     private fun uploadAndTranslateImages() {
-        val stringBuilder = StringBuilder()
+        val n = selectedImages.size
+        val translatedTextList: MutableList<String> = MutableList(n) { "" }
         val storageRef = FirebaseStorage.getInstance().reference
-        var index  = 0
+        var uploadedCount = 0
         for (file in selectedImages) {
             val photoUri = Uri.fromFile(file)
             val imageRef = storageRef.child("images/${file.name}")
@@ -167,13 +168,19 @@ class Image2Text : AppCompatActivity() {
                 // File uploaded successfully, get the download URL
                 taskSnapshot.metadata?.reference?.downloadUrl?.addOnSuccessListener {
                     val fileName = file.name
-                    imageSwitcher.setImageURI(Uri.fromFile(file))
-                    currentImagePosition = index++
+                    val uploadedImageIndex = selectedImages.indexOf(file)
                     val prediction = translateImage(fileName)
-                    stringBuilder.append(prediction)
-                    stringBuilder.append(" ")
-                    txtTranslated.post { // using txtTranslated.post to update TextView in UI thread
-                        txtTranslated.text = stringBuilder.toString()
+                    translatedTextList[uploadedImageIndex] = prediction
+                    uploadedCount++
+                    if(uploadedCount == selectedImages.size) {
+                        val stringBuilder : StringBuilder = StringBuilder()
+                        for(word in translatedTextList){
+                            stringBuilder.append(word)
+                            stringBuilder.append(" ")
+                        }
+                        txtTranslated.post { // using txtTranslated.post to update TextView in UI thread
+                            txtTranslated.text = stringBuilder.toString()
+                        }
                     }
                 }
             }.addOnFailureListener { exception ->
@@ -237,8 +244,10 @@ class Image2Text : AppCompatActivity() {
     @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        selectedImages.clear()
         if (requestCode == cameraRequestCode && resultCode == RESULT_OK) {
+            selectedImages.clear()
+            images.clear()
+
             val contentUri = Uri.fromFile(cameraPhoto)
             selectedImages.add(cameraPhoto)
             val mediaScanIntent = Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE)
@@ -247,6 +256,8 @@ class Image2Text : AppCompatActivity() {
             imageSwitcher.setImageURI(contentUri)
         }
         if (requestCode == galleryRequestCode && resultCode == RESULT_OK) {
+            selectedImages.clear()
+            images.clear()
             // if multiple images are selected
             if (data?.clipData != null) {
                 val count = data.clipData?.itemCount
