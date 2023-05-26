@@ -6,25 +6,29 @@
     android:layout_height="match_parent"
     tools:context=".Image2Text">
 
-    <Button
+    <ImageButton
         android:id="@+id/switch_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="50dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="4dp"
+        android:background="@drawable/circle_button_background"
+        android:contentDescription="@string/switch_mode"
         android:fontFamily="sans-serif-medium"
-        android:text="@string/switch_mode"
-        android:textSize="15sp"
-        android:textStyle="bold"
+        android:src="@drawable/baseline_sync_alt_24"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
+    <ImageButton
         android:id="@+id/home_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="50dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/circle_button_background"
+        android:contentDescription="@string/home"
         android:fontFamily="sans-serif-medium"
-        android:text="@string/home"
-        android:textSize="15sp"
-        android:textStyle="bold"
+        android:src="@drawable/baseline_home_24"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -32,84 +36,99 @@
         android:id="@+id/out_trans_text"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="2dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginBottom="2dp"
         android:text="@string/translation_of_the_image_s"
-        app:layout_constraintBottom_toTopOf="@+id/trans_button"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@+id/galleryButton"
         app:layout_constraintEnd_toEndOf="parent"
-        android:textSize = "20sp"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toEndOf="@+id/out_voice_button" />
+
 
     <ImageButton
         android:id="@+id/out_voice_button"
-        android:layout_width="55dp"
-        android:layout_height="50dp"
-        android:backgroundTint="#1563D8"
+        android:layout_width="50dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginBottom="4dp"
+        android:background="@drawable/circle_button_background"
         android:contentDescription="@string/translation_audio"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@android:drawable/ic_lock_silent_mode_off" />
+        android:src="@drawable/ic_baseline_graphic_eq_24"
+        app:layout_constraintBottom_toTopOf="@+id/trans_button"
+        app:layout_constraintStart_toStartOf="parent" />
 
-
-
-
-    <Button
+    <ImageButton
         android:id="@+id/trans_button"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="5dp"
-        android:fontFamily="sans-serif-medium"
-        android:text="@string/translate"
-        android:textSize="15sp"
-        android:textStyle="bold"
+        android:layout_height="30dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/button_background"
+        android:contentDescription="@string/translate"
+        android:src="@drawable/baseline_translate_24"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/galleryButton"
-        app:layout_constraintStart_toEndOf="@+id/out_voice_button" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <ImageButton
         android:id="@+id/cameraButton"
-        android:layout_width="55dp"
-        android:layout_height="50dp"
-        android:backgroundTint="#1563D8"
+        android:layout_width="50dp"
+        android:layout_height="48dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/circle_button_background"
+        android:contentDescription="@string/open_camera"
+        android:src="@drawable/ic_camera"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@mipmap/ic_camera_inv_foreground"
-        android:contentDescription="@string/open_camera" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <ImageButton
         android:id="@+id/galleryButton"
-        android:layout_width="55dp"
-        android:layout_height="50dp"
-        android:backgroundTint="#1563D8"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/cameraButton"
-        app:srcCompat="@mipmap/ic_gallery_inv_foreground"
+        android:layout_width="50dp"
+        android:layout_height="48dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/circle_button_background"
         android:contentDescription="@string/open_gallery"
-        />
+        android:src="@drawable/ic_photo"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/cameraButton" />
 
     <ImageSwitcher
         android:id="@+id/imageSwitcher"
         android:layout_width="0dp"
         android:layout_height="495dp"
+        android:contentDescription="@string/image_switcher"
         app:layout_constraintBottom_toTopOf="@+id/out_trans_text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.343"
-        android:contentDescription="@string/image_switcher" />
+        app:layout_constraintVertical_bias="0.4" />
 
-    <Button
+    <ImageButton
         android:id="@+id/previousBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/previous"
+        android:layout_width="50dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="4dp"
+        android:background="@drawable/circle_button_background"
+        android:contentDescription="@string/previous"
+        android:src="@drawable/ic_baseline_arrow_back_24"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageSwitcher" />
 
-    <Button
+    <ImageButton
         android:id="@+id/nextBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/next"
+        android:layout_width="50dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="4dp"
+        android:background="@drawable/circle_button_background"
+        android:contentDescription="@string/next"
+        android:src="@drawable/ic_arrow_forward"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageSwitcher" />
 

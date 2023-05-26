@@ -77,12 +77,12 @@ class Image2Text : AppCompatActivity() {
 
         txtTranslated = findViewById(R.id.out_trans_text)
         imageSwitcher = findViewById(R.id.imageSwitcher)
-        val button1 = findViewById<Button>(R.id.switch_button)
+        val button1 = findViewById<ImageButton>(R.id.switch_button)
         button1.setOnClickListener {
             val intent = Intent(this, TextVoice2SL::class.java)
             startActivity(intent)
         }
-        val button2 = findViewById<Button>(R.id.home_button)
+        val button2 = findViewById<ImageButton>(R.id.home_button)
         button2.setOnClickListener {
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
@@ -106,12 +106,12 @@ class Image2Text : AppCompatActivity() {
             tts.speak((txtTranslated.text), TextToSpeech.QUEUE_FLUSH, null, null)
         }
 
-        val transBtn = findViewById<Button>(R.id.trans_button)
+        val transBtn = findViewById<ImageButton>(R.id.trans_button)
         transBtn.setOnClickListener {
             uploadAndTranslateImages()
         }
 
-        val nextBtn = findViewById<Button>(R.id.nextBtn)
+        val nextBtn = findViewById<ImageButton>(R.id.nextBtn)
         nextBtn.setOnClickListener {
             if (currentImagePosition < images.size - 1) {
                 currentImagePosition++
@@ -122,7 +122,7 @@ class Image2Text : AppCompatActivity() {
             }
         }
 
-        val prevBtn = findViewById<Button>(R.id.previousBtn)
+        val prevBtn = findViewById<ImageButton>(R.id.previousBtn)
         prevBtn.setOnClickListener {
             if (currentImagePosition > 0) {
                 currentImagePosition--

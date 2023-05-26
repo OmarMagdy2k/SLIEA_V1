@@ -6,52 +6,56 @@
     android:layout_height="match_parent"
     tools:context=".TextVoice2SL">
 
-    <Button
+    <ImageButton
         android:id="@+id/switch_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="50dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="4dp"
+        android:background="@drawable/circle_button_background"
+        android:contentDescription="@string/switch_mode"
         android:fontFamily="sans-serif-medium"
-        android:text="@string/switch_mode"
-        android:textSize="15sp"
-        android:textStyle="bold"
+        android:src="@drawable/baseline_sync_alt_24"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
+    <ImageButton
         android:id="@+id/home_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="50dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/circle_button_background"
+        android:contentDescription="@string/home"
         android:fontFamily="sans-serif-medium"
-        android:text="@string/home"
-        android:textSize="15sp"
-        android:textStyle="bold"
+        android:src="@drawable/baseline_home_24"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <VideoView
         android:id="@+id/graphic_videoView"
-        android:layout_width="wrap_content"
-        android:layout_height="480dp"
+        android:layout_width="0dp"
+        android:layout_height="495dp"
         app:layout_constraintBottom_toTopOf="@+id/editTextTextMultiLine"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.3" />
+        app:layout_constraintVertical_bias="0.4" />
 
-    <Button
+
+    <ImageButton
         android:id="@+id/trans_button"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="3dp"
-        android:layout_marginEnd="3dp"
-        android:fontFamily="sans-serif-medium"
-        android:text="@string/translate"
-        android:textSize="15sp"
-        android:textStyle="bold"
+        android:layout_height="30dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/button_background"
+        android:src="@drawable/baseline_translate_24"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/replayButton" />
-
+        app:layout_constraintStart_toStartOf="parent"
+        android:contentDescription="@string/translate" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/textInputLayout"
@@ -65,10 +69,11 @@
         android:id="@+id/editTextTextMultiLine"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="3dp"
-        android:layout_marginEnd="3dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginBottom="4dp"
         android:autoLink="web|phone|email"
-        android:backgroundTint="#1563D8"
+        android:backgroundTint="#99A534DD"
         android:ems="10"
         android:gravity="start|top"
         android:hint="@string/enter_your_message"
@@ -82,27 +87,28 @@
 
     <ImageButton
         android:id="@+id/micButton"
-        android:layout_width="57dp"
+        android:layout_width="50dp"
         android:layout_height="48dp"
-        android:layout_marginEnd="3dp"
-        android:background="#1563D8"
+        android:layout_marginEnd="4dp"
+        android:layout_marginBottom="4dp"
+        android:background="@drawable/circle_button_background"
         android:contentDescription="@string/recoder"
         android:soundEffectsEnabled="true"
+        android:src="@drawable/ic_baseline_mic_none_24"
         app:layout_constraintBottom_toBottomOf="@+id/textInputLayout"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@mipmap/ic_mic_foreground" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <ImageButton
         android:id="@+id/replayButton"
-        android:layout_width="48dp"
-        android:layout_height="40dp"
-        android:layout_marginStart="3dp"
-        android:layout_marginBottom="5dp"
-        android:background="#1563D8"
+        android:layout_width="50dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="4dp"
+        android:background="@drawable/circle_button_background"
         android:contentDescription="@string/replay"
         android:soundEffectsEnabled="true"
-        android:src="@mipmap/ic_replay_foreground"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        android:src="@drawable/ic_baseline_replay_24"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/graphic_videoView" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

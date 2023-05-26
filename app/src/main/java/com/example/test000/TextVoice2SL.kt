@@ -48,13 +48,13 @@ class TextVoice2SL : AppCompatActivity() {
             translationLanguage = intent.getStringExtra("translationLanguage")!!
         }
 
-        val switchBtn = findViewById<Button>(R.id.switch_button)
+        val switchBtn = findViewById<ImageButton>(R.id.switch_button)
         switchBtn.setOnClickListener {
             val intent = Intent(this, Image2Text::class.java)
             startActivity(intent)
         }
 
-        val homeBtn = findViewById<Button>(R.id.home_button)
+        val homeBtn = findViewById<ImageButton>(R.id.home_button)
         homeBtn.setOnClickListener {
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
@@ -62,7 +62,7 @@ class TextVoice2SL : AppCompatActivity() {
 
         val editText = findViewById<EditText>(R.id.editTextTextMultiLine)
 
-        val transButton = findViewById<Button>(R.id.trans_button)
+        val transButton = findViewById<ImageButton>(R.id.trans_button)
         transButton.setOnClickListener {
             transText(editText)
         }
