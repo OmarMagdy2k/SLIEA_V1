@@ -6,41 +6,17 @@
     android:layout_height="match_parent"
     tools:context=".TextVoice2SL">
 
-    <ImageButton
-        android:id="@+id/switch_button"
-        android:layout_width="50dp"
-        android:layout_height="48dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="4dp"
-        android:background="@drawable/circle_button_background"
-        android:contentDescription="@string/switch_mode"
-        android:fontFamily="sans-serif-medium"
-        android:src="@drawable/baseline_sync_alt_24"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageButton
-        android:id="@+id/home_button"
-        android:layout_width="50dp"
-        android:layout_height="48dp"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="8dp"
-        android:background="@drawable/circle_button_background"
-        android:contentDescription="@string/home"
-        android:fontFamily="sans-serif-medium"
-        android:src="@drawable/baseline_home_24"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
     <VideoView
         android:id="@+id/graphic_videoView"
-        android:layout_width="0dp"
-        android:layout_height="495dp"
+        android:layout_width="wrap_content"
+        android:layout_height="480dp"
+        android:layout_marginTop="45dp"
         app:layout_constraintBottom_toTopOf="@+id/editTextTextMultiLine"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.4" />
+        app:layout_constraintTop_toBottomOf="@+id/languagesMenu"
+        app:layout_constraintVertical_bias="0.0" />
 
 
     <ImageButton
@@ -73,10 +49,10 @@
         android:layout_marginEnd="4dp"
         android:layout_marginBottom="4dp"
         android:autoLink="web|phone|email"
-        android:backgroundTint="#99A534DD"
+        android:background="@drawable/bg_edittext"
         android:ems="10"
         android:gravity="start|top"
-        android:hint="@string/enter_your_message"
+        android:hint="@string/type_to_translate"
         android:inputType="textMultiLine"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         android:textSize="20sp"
@@ -110,5 +86,53 @@
         android:src="@drawable/ic_baseline_replay_24"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/graphic_videoView" />
+
+    <ImageButton
+        android:id="@+id/signifyBtn"
+        android:layout_width="50dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/button_background"
+        android:contentDescription="@string/signify_page"
+        android:src="@drawable/ic_baseline_record_voice_over_24"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/tranSignBtn"
+        android:layout_width="50dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/button_background"
+        android:contentDescription="@string/signify_page"
+        android:src="@drawable/ic_baseline_add_a_photo_24"
+        app:layout_constraintStart_toEndOf="@+id/signifyBtn"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/tranSignBetaBtn"
+        android:layout_width="50dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/button_background"
+        android:contentDescription="@string/signify_page"
+        android:src="@drawable/ic_baseline_video_call_24"
+        app:layout_constraintStart_toEndOf="@+id/tranSignBtn"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/languagesMenu"
+        android:layout_width="50dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="4dp"
+        android:background="@drawable/circle_button_background"
+        android:contentDescription="@string/languages"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@mipmap/language_foreground" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

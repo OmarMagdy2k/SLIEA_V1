@@ -16,6 +16,8 @@ import java.util.*
 
 class Video2Text : AppCompatActivity() {
 
+    private var translationLanguage: String =
+        "En" // default to "en" if intent extra is not available
     private lateinit var videoView: VideoView
     private var cameraRequestCode: Int = 123
     private var galleryRequestCode: Int = 122
@@ -25,11 +27,41 @@ class Video2Text : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_video2text)
 
-        val button1 = findViewById<Button>(R.id.switch_button)
-        button1.setOnClickListener {
-            val intent = Intent(this, TextVoice2SL::class.java)
-            startActivity(intent)
+        val languagesOptions = findViewById<ImageView>(R.id.languagesMenu)
+        languagesOptions.setOnClickListener {
+            val popupMenu = PopupMenu(this,it)
+            popupMenu.setOnMenuItemClickListener { item ->
+                when (item.itemId) {
+                    R.id.englishLanguage -> {
+                        translationLanguage = "En"
+                        true
+                    }
+                    R.id.arabicLanguage -> {
+                        translationLanguage = "Ar"
+                        true
+                    }
+                    else -> {false}
+                }
+            }
+            popupMenu.inflate(R.menu.menu_main)
+            popupMenu.show()
+        }
 
+        val signifyPageBtn = findViewById<ImageButton>(R.id.signifyBtn)
+        signifyPageBtn.setOnClickListener {
+            val signifyIntent = Intent(this,TextVoice2SL::class.java)
+            startActivity(signifyIntent)
+        }
+        val tranSignPageBtn = findViewById<ImageButton>(R.id.tranSignBtn)
+        tranSignPageBtn.setOnClickListener {
+            val tranSignIntent = Intent(this,Image2Text::class.java)
+            startActivity(tranSignIntent)
+        }
+
+        val tranSignBetaPageBtn = findViewById<ImageButton>(R.id.tranSignBetaBtn)
+        tranSignBetaPageBtn.setOnClickListener {
+            val tranSignBetaIntent = Intent(this,Video2Text::class.java)
+            startActivity(tranSignBetaIntent)
         }
 
         val galleryBtn = findViewById<ImageButton>(R.id.galleryButton)
@@ -38,11 +70,6 @@ class Video2Text : AppCompatActivity() {
             startActivityForResult(gallery, galleryRequestCode)
         }
 
-        val button2 = findViewById<Button>(R.id.home_button)
-        button2.setOnClickListener {
-            val intent = Intent(this, MainActivity::class.java)
-            startActivity(intent)
-        }
         videoView = findViewById(R.id.record_videoView)
         // now set up media controller for the play pause next pre
         val mediaCollection = MediaController(this)

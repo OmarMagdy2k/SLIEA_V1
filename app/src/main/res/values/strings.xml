@@ -6,8 +6,8 @@
     <string name="switch_mode">Switch Mode</string>
     <string name="english">English</string>
     <string name="arabic">Arabic</string>
-    <string name="select_the_translation_language">Select The Translation Language</string>
-    <string name="select_the_process_type_from_below">Select The Process Type From Below</string>
+    <string name="translation_language">Translation Language</string>
+    <string name="process_type"> Process Type</string>
     <string name="voice_text_to_sign_language">Voice-Text to Sign Language</string>
     <string name="sign_language_to_voice_text">Sign Language(Video) to Voice-Text " " Beta " " </string>
     <string name="sign_language_to_voice_text2">Sign Language(Photos) to Voice-Text </string>
@@ -28,5 +28,11 @@
     <string name="translation_of_the_image">Translation of The Image</string>
     <string name="image_switcher">Image Switcher</string>
     <string name="translation_of_the_image_s">Translation of The Image(s)</string>
+    <string name="confirm">Confirm</string>
+    <string name="languages">Languages</string>
+    <string name="arabic2">العربية</string>
+    <string name="logo">Logo</string>
+    <string name="signify_page">Signify Page</string>
+    <string name="type_to_translate">Type to Translate</string>
 
 </resources>

@@ -11,10 +11,10 @@ import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import android.speech.tts.TextToSpeech
-import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageSwitcher
 import android.widget.ImageView
+import android.widget.PopupMenu
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -58,11 +58,26 @@ class Image2Text : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_image2text)
 
-
-        // Check if the intent contains an extra with key "translationLanguage"
-        if (intent.hasExtra("translationLanguage")) {
-            translationLanguage = intent.getStringExtra("translationLanguage")!!
+        val languagesOptions = findViewById<ImageView>(R.id.languagesMenu)
+        languagesOptions.setOnClickListener {
+            val popupMenu = PopupMenu(this,it)
+            popupMenu.setOnMenuItemClickListener { item ->
+                when (item.itemId) {
+                    R.id.englishLanguage -> {
+                        translationLanguage = "En"
+                        true
+                    }
+                    R.id.arabicLanguage -> {
+                        translationLanguage = "Ar"
+                        true
+                    }
+                    else -> {false}
+                }
+            }
+            popupMenu.inflate(R.menu.menu_main)
+            popupMenu.show()
         }
+
 
         tts = TextToSpeech(applicationContext) { status ->
             if (status != TextToSpeech.ERROR) {
@@ -77,16 +92,24 @@ class Image2Text : AppCompatActivity() {
 
         txtTranslated = findViewById(R.id.out_trans_text)
         imageSwitcher = findViewById(R.id.imageSwitcher)
-        val button1 = findViewById<ImageButton>(R.id.switch_button)
-        button1.setOnClickListener {
-            val intent = Intent(this, TextVoice2SL::class.java)
-            startActivity(intent)
+
+        val signifyPageBtn = findViewById<ImageButton>(R.id.signifyBtn)
+        signifyPageBtn.setOnClickListener {
+            val signifyIntent = Intent(this,TextVoice2SL::class.java)
+            startActivity(signifyIntent)
         }
-        val button2 = findViewById<ImageButton>(R.id.home_button)
-        button2.setOnClickListener {
-            val intent = Intent(this, MainActivity::class.java)
-            startActivity(intent)
+        val tranSignPageBtn = findViewById<ImageButton>(R.id.tranSignBtn)
+        tranSignPageBtn.setOnClickListener {
+            val tranSignIntent = Intent(this,Image2Text::class.java)
+            startActivity(tranSignIntent)
         }
+
+        val tranSignBetaPageBtn = findViewById<ImageButton>(R.id.tranSignBetaBtn)
+        tranSignBetaPageBtn.setOnClickListener {
+            val tranSignBetaIntent = Intent(this,Video2Text::class.java)
+            startActivity(tranSignBetaIntent)
+        }
+
         val cameraBtn = findViewById<ImageButton>(R.id.cameraButton)
         cameraBtn.setOnClickListener {
             askCameraPermissions()

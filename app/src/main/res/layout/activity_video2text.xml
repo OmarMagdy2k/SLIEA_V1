@@ -7,30 +7,52 @@
     tools:context=".Video2Text">
 
     <ImageButton
-        android:id="@+id/switch_button"
+        android:id="@+id/signifyBtn"
+        android:layout_width="50dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/button_background"
+        android:contentDescription="@string/signify_page"
+        android:src="@drawable/ic_baseline_record_voice_over_24"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/tranSignBtn"
+        android:layout_width="50dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/button_background"
+        android:contentDescription="@string/signify_page"
+        android:src="@drawable/ic_baseline_add_a_photo_24"
+        app:layout_constraintStart_toEndOf="@+id/signifyBtn"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/tranSignBetaBtn"
+        android:layout_width="50dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/button_background"
+        android:contentDescription="@string/signify_page"
+        android:src="@drawable/ic_baseline_video_call_24"
+        app:layout_constraintStart_toEndOf="@+id/tranSignBtn"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/languagesMenu"
         android:layout_width="50dp"
         android:layout_height="48dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="4dp"
         android:background="@drawable/circle_button_background"
-        android:contentDescription="@string/switch_mode"
-        android:fontFamily="sans-serif-medium"
-        android:src="@drawable/baseline_sync_alt_24"
+        android:contentDescription="@string/languages"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageButton
-        android:id="@+id/home_button"
-        android:layout_width="50dp"
-        android:layout_height="48dp"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="8dp"
-        android:background="@drawable/circle_button_background"
-        android:contentDescription="@string/home"
-        android:fontFamily="sans-serif-medium"
-        android:src="@drawable/baseline_home_24"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@mipmap/language_foreground" />
 
     <TextView
         android:id="@+id/out_trans_text"
@@ -60,14 +82,15 @@
 
     <VideoView
         android:id="@+id/record_videoView"
-        android:layout_width="0dp"
-        android:layout_height="495dp"
+        android:layout_width="wrap_content"
+        android:layout_height="480dp"
+        android:layout_marginTop="45dp"
         app:layout_constraintBottom_toTopOf="@+id/out_trans_text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.4" />
+        app:layout_constraintTop_toBottomOf="@+id/languagesMenu"
+        app:layout_constraintVertical_bias="0.0" />
 
     <ImageButton
         android:id="@+id/trans_button"
@@ -90,12 +113,11 @@
         android:layout_marginEnd="4dp"
         android:layout_marginBottom="8dp"
         android:background="@drawable/circle_button_background"
-        android:onClick="startVideo"
-        android:src="@drawable/ic_camera"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         android:contentDescription="@string/open_video"
-        />
+        android:onClick="startVideo"
+        android:src="@drawable/ic_baseline_video_camera_back_24"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <ImageButton
         android:id="@+id/galleryButton"
@@ -104,10 +126,9 @@
         android:layout_marginEnd="4dp"
         android:layout_marginBottom="8dp"
         android:background="@drawable/circle_button_background"
-        android:src="@drawable/ic_photo"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/videoButton"
         android:contentDescription="@string/open_gallery"
-        />
+        android:src="@drawable/ic_video_library"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/videoButton" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

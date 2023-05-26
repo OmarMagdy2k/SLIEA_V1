@@ -37,9 +37,6 @@
             android:name=".Image2Text"
             android:exported="true" />
         <activity
-            android:name=".MainActivity"
-            android:exported="false" />
-        <activity
             android:name=".TextVoice2SL"
             android:exported="false" />
         <activity
