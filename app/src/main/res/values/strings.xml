@@ -38,4 +38,20 @@
     <string name="transign">TranSign</string>
     <string name="transign_beta">TranSign Beta</string>
 
+
+    <string name="onboarding_slide1_title"> </string>
+    <string name="onboarding_slide1_subtitle">Welcome to our sign language interpreter app! </string>
+    <string name="onboarding_slide1_desc">Our app is designed to help bridge communication gaps between individuals who use sign language and those who do not. </string>
+
+    <string name="onboarding_slide2_title"></string>
+    <string name="onboarding_slide2_subtitle">Choose your language</string>
+    <string name="onboarding_slide2_desc">Whether you speak English OR Arabic language, our app can help you communicate through sign language interpretation and spoken language translation. Choose your preferred language and start exploring our app today!"</string>
+
+    <string name="onboarding_slide3_title"></string>
+    <string name="onboarding_slide3_subtitle">Simplicity of usage</string>
+    <string name="onboarding_slide3_desc">Our app makes translating sign gestures a breeze! Simply hold your phone up and capture the Sign gesture, then press the translate button and choose "switch" to see our anime character bring your words to life."</string>
+
+    <string name="skip">Skip</string>
+    <string name="get_started">Get started</string>
+
 </resources>
