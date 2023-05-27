@@ -19,4 +19,5 @@
     <color name="colorBlueMidnight">#003366</color>
     <color name="colorGrey">#C9C9C9</color>
     <color name="colorWhite">#FFFFFF</color>
+    <color name="newColor">#b682fb</color>
 </resources>

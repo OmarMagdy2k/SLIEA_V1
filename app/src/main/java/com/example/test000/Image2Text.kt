@@ -11,6 +11,7 @@ import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import android.speech.tts.TextToSpeech
+import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageSwitcher
 import android.widget.ImageView
@@ -26,6 +27,7 @@ import com.chaquo.python.PyException
 import com.chaquo.python.PyObject
 import com.chaquo.python.Python
 import com.chaquo.python.android.AndroidPlatform
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.storage.FirebaseStorage
 import java.io.File
 import java.io.FileOutputStream
@@ -78,6 +80,28 @@ class Image2Text : AppCompatActivity() {
             popupMenu.show()
         }
 
+        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
+        bottomNavigationView.selectedItemId = R.id.tranSignBtn
+
+        bottomNavigationView.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.signifyBtn -> {
+                    startActivity(Intent(applicationContext, TextVoice2SL::class.java))
+                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+                    finish()
+                    true
+                }
+                R.id.tranSignBtn -> true
+                R.id.tranSignBetaBtn -> {
+                    startActivity(Intent(applicationContext, Video2Text::class.java))
+                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+                    finish()
+                    true
+                }
+                else -> false
+            }
+        }
+
 
         tts = TextToSpeech(applicationContext) { status ->
             if (status != TextToSpeech.ERROR) {
@@ -93,22 +117,6 @@ class Image2Text : AppCompatActivity() {
         txtTranslated = findViewById(R.id.out_trans_text)
         imageSwitcher = findViewById(R.id.imageSwitcher)
 
-        val signifyPageBtn = findViewById<ImageButton>(R.id.signifyBtn)
-        signifyPageBtn.setOnClickListener {
-            val signifyIntent = Intent(this,TextVoice2SL::class.java)
-            startActivity(signifyIntent)
-        }
-        val tranSignPageBtn = findViewById<ImageButton>(R.id.tranSignBtn)
-        tranSignPageBtn.setOnClickListener {
-            val tranSignIntent = Intent(this,Image2Text::class.java)
-            startActivity(tranSignIntent)
-        }
-
-        val tranSignBetaPageBtn = findViewById<ImageButton>(R.id.tranSignBetaBtn)
-        tranSignBetaPageBtn.setOnClickListener {
-            val tranSignBetaIntent = Intent(this,Video2Text::class.java)
-            startActivity(tranSignBetaIntent)
-        }
 
         val cameraBtn = findViewById<ImageButton>(R.id.cameraButton)
         cameraBtn.setOnClickListener {
@@ -129,7 +137,7 @@ class Image2Text : AppCompatActivity() {
             tts.speak((txtTranslated.text), TextToSpeech.QUEUE_FLUSH, null, null)
         }
 
-        val transBtn = findViewById<ImageButton>(R.id.trans_button)
+        val transBtn = findViewById<Button>(R.id.trans_button)
         transBtn.setOnClickListener {
             uploadAndTranslateImages()
         }

@@ -9,6 +9,7 @@ import android.os.Environment
 import android.provider.MediaStore
 import android.view.View
 import android.widget.*
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import java.io.File
 import java.io.FileOutputStream
 import java.util.*
@@ -47,22 +48,28 @@ class Video2Text : AppCompatActivity() {
             popupMenu.show()
         }
 
-        val signifyPageBtn = findViewById<ImageButton>(R.id.signifyBtn)
-        signifyPageBtn.setOnClickListener {
-            val signifyIntent = Intent(this,TextVoice2SL::class.java)
-            startActivity(signifyIntent)
-        }
-        val tranSignPageBtn = findViewById<ImageButton>(R.id.tranSignBtn)
-        tranSignPageBtn.setOnClickListener {
-            val tranSignIntent = Intent(this,Image2Text::class.java)
-            startActivity(tranSignIntent)
+        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
+        bottomNavigationView.selectedItemId = R.id.tranSignBetaBtn
+
+        bottomNavigationView.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.signifyBtn -> {
+                    startActivity(Intent(applicationContext, TextVoice2SL::class.java))
+                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+                    finish()
+                    true
+                }
+                R.id.tranSignBtn -> {
+                    startActivity(Intent(applicationContext, Image2Text::class.java))
+                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+                    finish()
+                    true
+                }
+                R.id.tranSignBetaBtn -> true
+                else -> false
+            }
         }
 
-        val tranSignBetaPageBtn = findViewById<ImageButton>(R.id.tranSignBetaBtn)
-        tranSignBetaPageBtn.setOnClickListener {
-            val tranSignBetaIntent = Intent(this,Video2Text::class.java)
-            startActivity(tranSignBetaIntent)
-        }
 
         val galleryBtn = findViewById<ImageButton>(R.id.galleryButton)
         galleryBtn.setOnClickListener {

@@ -2,7 +2,7 @@
     <!-- Base application theme. -->
     <style name="Theme.Test000" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/Blue_Dark</item>
+        <item name="colorPrimary">@color/net_Bar_Light</item>
         <item name="colorPrimaryVariant">@color/net_Bar_Dark</item>
         <item name="colorOnPrimary">#333333</item>
         <!-- Secondary brand color. -->

@@ -20,6 +20,7 @@ import com.chaquo.python.PyException
 import com.chaquo.python.PyObject
 import com.chaquo.python.Python
 import com.chaquo.python.android.AndroidPlatform
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import okhttp3.*
@@ -60,26 +61,32 @@ class TextVoice2SL : AppCompatActivity() {
             popupMenu.show()
         }
 
-        val signifyPageBtn = findViewById<ImageButton>(R.id.signifyBtn)
-        signifyPageBtn.setOnClickListener {
-            val signifyIntent = Intent(this,TextVoice2SL::class.java)
-            startActivity(signifyIntent)
-        }
-        val tranSignPageBtn = findViewById<ImageButton>(R.id.tranSignBtn)
-        tranSignPageBtn.setOnClickListener {
-            val tranSignIntent = Intent(this,Image2Text::class.java)
-            startActivity(tranSignIntent)
+        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
+        bottomNavigationView.selectedItemId = R.id.signifyBtn
+
+        bottomNavigationView.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.signifyBtn -> true
+                R.id.tranSignBtn -> {
+                    startActivity(Intent(applicationContext, Image2Text::class.java))
+                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+                    finish()
+                    true
+                }
+                R.id.tranSignBetaBtn -> {
+                    startActivity(Intent(applicationContext, Video2Text::class.java))
+                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+                    finish()
+                    true
+                }
+                else -> false
+            }
         }
 
-        val tranSignBetaPageBtn = findViewById<ImageButton>(R.id.tranSignBetaBtn)
-        tranSignBetaPageBtn.setOnClickListener {
-            val tranSignBetaIntent = Intent(this,Video2Text::class.java)
-            startActivity(tranSignBetaIntent)
-        }
 
         val editText = findViewById<EditText>(R.id.editTextTextMultiLine)
 
-        val transButton = findViewById<ImageButton>(R.id.trans_button)
+        val transButton = findViewById<Button>(R.id.trans_button)
         transButton.setOnClickListener {
             transText(editText)
         }

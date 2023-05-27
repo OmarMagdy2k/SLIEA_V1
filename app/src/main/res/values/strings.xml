@@ -34,5 +34,8 @@
     <string name="logo">Logo</string>
     <string name="signify_page">Signify Page</string>
     <string name="type_to_translate">Type to Translate</string>
+    <string name="signify">Signify</string>
+    <string name="transign">TranSign</string>
+    <string name="transign_beta">TranSign Beta</string>
 
 </resources>
