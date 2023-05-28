@@ -53,5 +53,8 @@
 
     <string name="skip">Skip</string>
     <string name="get_started">Get started</string>
+    <string name="gesture_translator">   Gesture Translator</string>
+    <string name="gesture_translator_beta">   Gesture Translator[BETA]</string>
+    <string name="gesture_simulator">   Gesture Simulator</string>
 
 </resources>
