@@ -140,7 +140,7 @@
         android:contentDescription="@string/languages"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@mipmap/language_foreground" />
+        app:srcCompat="@mipmap/language_newsize_foreground" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigationView"

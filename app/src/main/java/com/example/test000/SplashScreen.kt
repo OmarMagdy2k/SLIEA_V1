@@ -4,6 +4,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 
 class SplashScreen : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -12,9 +13,9 @@ class SplashScreen : AppCompatActivity() {
 
         supportActionBar?.hide()
 
-        Handler().postDelayed({
+        Handler(Looper.myLooper()!!).postDelayed({
             val intent = Intent(this@SplashScreen,TextVoice2SL::class.java)
             startActivity(intent)
-            },3000)
+            },5000)
     }
 }
