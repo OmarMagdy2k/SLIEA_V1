@@ -54,15 +54,15 @@
         android:id="@+id/trans_button"
         android:layout_width="0dp"
         android:layout_height="40dp"
-        android:layout_marginStart="4dp"
-        android:layout_marginEnd="4dp"
+        android:layout_marginStart="35dp"
+        android:layout_marginEnd="35dp"
         android:layout_marginBottom="12dp"
         android:background="@drawable/button_background"
         android:elevation="2dp"
         android:src="@drawable/baseline_translate_24"
         android:text="@string/translate"
         app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView"
-        app:layout_constraintEnd_toStartOf="@+id/micButton"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <com.google.android.material.textfield.TextInputLayout
@@ -89,8 +89,7 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         android:textSize="20sp"
         app:layout_constraintBottom_toTopOf="@+id/trans_button"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintEnd_toStartOf="@+id/micButton"
         app:layout_constraintStart_toStartOf="parent" />
 
     <ImageButton
@@ -98,14 +97,13 @@
         android:layout_width="50dp"
         android:layout_height="48dp"
         android:layout_marginEnd="4dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="5dp"
         android:background="@drawable/circle_button_background"
         android:contentDescription="@string/recoder"
         android:soundEffectsEnabled="true"
         android:src="@drawable/ic_baseline_mic_none_24"
-        app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView"
+        app:layout_constraintBottom_toTopOf="@+id/trans_button"
         app:layout_constraintEnd_toEndOf="parent" />
-
 
     <ImageView
         android:id="@+id/languagesMenu"
