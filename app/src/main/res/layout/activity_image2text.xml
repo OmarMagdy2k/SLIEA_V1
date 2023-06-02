@@ -28,7 +28,7 @@
     <TextView
         android:id="@+id/out_trans_text"
         android:layout_width="0dp"
-        android:layout_height="100dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
         android:layout_marginEnd="4dp"
         android:layout_marginBottom="8dp"
@@ -112,11 +112,9 @@
         android:layout_height="48dp"
         android:layout_marginStart="30dp"
         android:layout_marginTop="5dp"
-        android:layout_marginBottom="8dp"
         android:background="@drawable/circle_button_background"
         android:contentDescription="@string/previous"
         android:src="@drawable/ic_baseline_arrow_back_24"
-        app:layout_constraintBottom_toTopOf="@+id/out_trans_text"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageSwitcher" />
 
@@ -126,11 +124,9 @@
         android:layout_height="48dp"
         android:layout_marginTop="5dp"
         android:layout_marginEnd="30dp"
-        android:layout_marginBottom="8dp"
         android:background="@drawable/circle_button_background"
         android:contentDescription="@string/next"
         android:src="@drawable/ic_arrow_forward"
-        app:layout_constraintBottom_toTopOf="@+id/out_trans_text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageSwitcher" />
 
