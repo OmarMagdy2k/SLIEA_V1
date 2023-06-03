@@ -34,24 +34,19 @@ import java.io.FileOutputStream
 import java.text.SimpleDateFormat
 import java.util.*
 
-
 class Image2Text : AppCompatActivity() {
 
     private var cameraRequestCode: Int = 123
     private var galleryRequestCode: Int = 122
     private lateinit var txtTranslated: TextView
     private lateinit var tts: TextToSpeech
-    private var translationLanguage: String =
-        "En" // default to "en" if intent extra is not available
     private lateinit var pythonModule: PyObject
     private var selectedImages: MutableList<File> = mutableListOf()
     private lateinit var cameraPhoto: File
-
+    internal var currentTranslationLanguage : String = ""
     private lateinit var imageSwitcher: ImageSwitcher
-
     //store uris of picked images
     private var images: ArrayList<Uri> = ArrayList()
-
     // current position/index of selected image
     private var currentImagePosition = 0
 
@@ -60,17 +55,23 @@ class Image2Text : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_image2text)
 
+        val intent = intent
+        // Check if the intent contains an extra with key "translationLanguage"
+        if (intent.hasExtra("currentTranslationLanguage")) {
+            currentTranslationLanguage = intent.getStringExtra("currentTranslationLanguage")!!
+        }
+
         val languagesOptions = findViewById<ImageView>(R.id.languagesMenu)
         languagesOptions.setOnClickListener {
             val popupMenu = PopupMenu(this,it)
             popupMenu.setOnMenuItemClickListener { item ->
                 when (item.itemId) {
                     R.id.englishLanguage -> {
-                        translationLanguage = "En"
+                        currentTranslationLanguage  = "En"
                         true
                     }
                     R.id.arabicLanguage -> {
-                        translationLanguage = "Ar"
+                        currentTranslationLanguage  = "Ar"
                         true
                     }
                     else -> {false}
@@ -86,14 +87,18 @@ class Image2Text : AppCompatActivity() {
         bottomNavigationView.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.signifyBtn -> {
-                    startActivity(Intent(applicationContext, TextVoice2SL::class.java))
+                    val int = Intent(applicationContext, TextVoice2SL::class.java)
+                    int.putExtra("currentTranslationLanguage",currentTranslationLanguage)
+                    startActivity(int)
                     overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
                     finish()
                     true
                 }
                 R.id.tranSignBtn -> true
                 R.id.tranSignBetaBtn -> {
-                    startActivity(Intent(applicationContext, Video2Text::class.java))
+                    val int = Intent(applicationContext, Video2Text::class.java)
+                    int.putExtra("currentTranslationLanguage",currentTranslationLanguage)
+                    startActivity(int)
                     overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
                     finish()
                     true
@@ -102,14 +107,17 @@ class Image2Text : AppCompatActivity() {
             }
         }
 
-
         tts = TextToSpeech(applicationContext) { status ->
             if (status != TextToSpeech.ERROR) {
-                if (translationLanguage == "En") {
-                    // Set language for TextToSpeech
+                if(currentTranslationLanguage != ""){
+                    if (currentTranslationLanguage == "En") {
+                        // Set language for TextToSpeech
+                        tts.language = Locale.US
+                    } else if (currentTranslationLanguage == "Ar") {
+                        tts.language = Locale("ar")
+                    }
+                } else {
                     tts.language = Locale.US
-                } else if (translationLanguage == "Ar") {
-                    tts.language = Locale("ar")
                 }
             }
         }
@@ -224,11 +232,16 @@ class Image2Text : AppCompatActivity() {
 
     private fun translateImage(fileName: String): String {
         try {
-            if (translationLanguage == "En") {
+            if (currentTranslationLanguage!=""){
+                if (currentTranslationLanguage == "En") {
+                    return pythonModule.callAttr("translate_image_En", fileName)
+                        .toJava(String::class.java)
+                } else if (currentTranslationLanguage == "Ar") {
+                    return pythonModule.callAttr("translate_image_Ar", fileName)
+                        .toJava(String::class.java)
+                }
+            } else {
                 return pythonModule.callAttr("translate_image_En", fileName)
-                    .toJava(String::class.java)
-            } else if (translationLanguage == "Ar") {
-                return pythonModule.callAttr("translate_image_Ar", fileName)
                     .toJava(String::class.java)
             }
         } catch (e: PyException) {

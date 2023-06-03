@@ -30,16 +30,21 @@ import java.util.*
 
 
 class TextVoice2SL : AppCompatActivity() {
-    private var translationLanguage: String =
-        "En" // default to "en" if intent extra is not available
     private lateinit var documentRef: DocumentReference
     private var storedVideos = mutableListOf<File>()
     private lateinit var correctedStatement: String
     private lateinit var wordsList: List<String>
+    internal var currentTranslationLanguage : String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_textvoice2sl)
+
+        val intent = intent
+        // Check if the intent contains an extra with key "currentTranslationLanguage"
+        if (intent.hasExtra("currentTranslationLanguage")) {
+            currentTranslationLanguage = intent.getStringExtra("currentTranslationLanguage")!!
+        }
 
         val languagesOptions = findViewById<ImageView>(R.id.languagesMenu)
         languagesOptions.setOnClickListener {
@@ -47,11 +52,11 @@ class TextVoice2SL : AppCompatActivity() {
             popupMenu.setOnMenuItemClickListener { item ->
                 when (item.itemId) {
                     R.id.englishLanguage -> {
-                        translationLanguage = "En"
+                        currentTranslationLanguage = "En"
                         true
                     }
                     R.id.arabicLanguage -> {
-                        translationLanguage = "Ar"
+                        currentTranslationLanguage = "Ar"
                         true
                     }
                     else -> {false}
@@ -68,13 +73,17 @@ class TextVoice2SL : AppCompatActivity() {
             when (item.itemId) {
                 R.id.signifyBtn -> true
                 R.id.tranSignBtn -> {
-                    startActivity(Intent(applicationContext, Image2Text::class.java))
+                    val int = Intent(applicationContext, Image2Text::class.java)
+                    int.putExtra("currentTranslationLanguage",currentTranslationLanguage)
+                    startActivity(int)
                     overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
                     finish()
                     true
                 }
                 R.id.tranSignBetaBtn -> {
-                    startActivity(Intent(applicationContext, Video2Text::class.java))
+                    val int = Intent(applicationContext, Video2Text::class.java)
+                    int.putExtra("currentTranslationLanguage",currentTranslationLanguage)
+                    startActivity(int)
                     overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
                     finish()
                     true
@@ -120,7 +129,9 @@ class TextVoice2SL : AppCompatActivity() {
         // Set the language code based on the translationLanguage variable
         speechRecognizerIntent.putExtra(
             RecognizerIntent.EXTRA_LANGUAGE,
-            if (translationLanguage == "Ar") "ar-SA" else "en-US"
+            if (currentTranslationLanguage!=""){
+                if (currentTranslationLanguage == "Ar") "ar-SA" else "en-US"
+            } else "en-US"
         )
         speechRecognizerIntent.putExtra(
             RecognizerIntent.EXTRA_LANGUAGE_MODEL,
@@ -158,7 +169,26 @@ class TextVoice2SL : AppCompatActivity() {
 
     private fun transText(editText: EditText) {
         val userInput = editText.text.toString().lowercase()
-        if (translationLanguage == "En") {
+        if(currentTranslationLanguage != "") {
+            if (currentTranslationLanguage == "En") {
+                if (!Python.isStarted()) {
+                    Python.start(AndroidPlatform(this))
+                }
+                val py = Python.getInstance()
+                val module: PyObject = py.getModule("client")
+                try {
+                    correctedStatement = module.callAttr("autocorrect_En", userInput)
+                        .toJava(String::class.java)
+                    editText.setText(correctedStatement)
+
+                } catch (e: PyException) {
+                    Toast.makeText(this, e.message, Toast.LENGTH_LONG).show()
+                }
+                wordsList = correctedStatement.split("\\s+".toRegex())
+            } else if (currentTranslationLanguage == "Ar") {
+                wordsList = userInput.split("\\s+".toRegex())
+            }
+        } else {
             if (!Python.isStarted()) {
                 Python.start(AndroidPlatform(this))
             }
@@ -173,17 +203,19 @@ class TextVoice2SL : AppCompatActivity() {
                 Toast.makeText(this, e.message, Toast.LENGTH_LONG).show()
             }
             wordsList = correctedStatement.split("\\s+".toRegex())
-        } else if (translationLanguage == "Ar") {
-            wordsList = userInput.split("\\s+".toRegex())
+
         }
         val firestore =
             FirebaseFirestore.getInstance() // Replace with your actual Firestore reference
+        if (currentTranslationLanguage != ""){
+            if (currentTranslationLanguage == "En") {
+                documentRef = firestore.collection("English_Videos").document("Videos")
+            } else if (currentTranslationLanguage == "Ar") {
+                documentRef = firestore.collection("Arabic_Videos").document("Videos")
 
-        // Create a query to search for the value in a specific collection
-        if (translationLanguage == "En") {
+        }
+        }else {
             documentRef = firestore.collection("English_Videos").document("Videos")
-        } else if (translationLanguage == "Ar") {
-            documentRef = firestore.collection("Arabic_Videos").document("Videos")
         }
         documentRef.get().addOnSuccessListener { documentSnapshot ->
             if (documentSnapshot.exists()) {
