@@ -16,6 +16,6 @@ class SplashScreen : AppCompatActivity() {
         Handler(Looper.myLooper()!!).postDelayed({
             val intent = Intent(this@SplashScreen,TextVoice2SL::class.java)
             startActivity(intent)
-            },5000)
+            },3200)
     }
 }
