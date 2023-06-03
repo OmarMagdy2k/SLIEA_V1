@@ -5,12 +5,11 @@ import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Environment
-
 import android.provider.MediaStore
 import android.speech.tts.TextToSpeech
-import android.view.View
 import android.widget.*
 import androidx.core.content.FileProvider
+import com.chaquo.python.PyException
 import com.chaquo.python.PyObject
 import com.chaquo.python.Python
 import com.chaquo.python.android.AndroidPlatform
@@ -114,11 +113,11 @@ class Video2Text : AppCompatActivity() {
 
         val galleryBtn = findViewById<ImageButton>(R.id.galleryButton)
         galleryBtn.setOnClickListener {
-            val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
-            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
-            intent.addCategory(Intent.CATEGORY_OPENABLE)
-            intent.type = "video/*"
-            startActivityForResult(intent, galleryRequestCode)
+            val galleryIntent = Intent(Intent.ACTION_OPEN_DOCUMENT)
+            galleryIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+            galleryIntent.addCategory(Intent.CATEGORY_OPENABLE)
+            galleryIntent.type = "video/*"
+            startActivityForResult(galleryIntent, galleryRequestCode)
         }
 
         val txt2speechButton = findViewById<ImageButton>(R.id.out_voice_button)
@@ -178,6 +177,27 @@ class Video2Text : AppCompatActivity() {
             val contentUri: Uri? = data?.data
             videoView.setVideoURI(contentUri)
         }
+    }
+
+
+    private fun translateVideo(fileName: String): String {
+        try {
+            if (currentTranslationLanguage!=""){
+                if (currentTranslationLanguage == "En") {
+                    return pythonModule.callAttr("translate_video_En", fileName)
+                        .toJava(String::class.java)
+                } else if (currentTranslationLanguage == "Ar") {
+                    return pythonModule.callAttr("translate_video_Ar", fileName)
+                        .toJava(String::class.java)
+                }
+            } else {
+                return pythonModule.callAttr("translate_video_En", fileName)
+                    .toJava(String::class.java)
+            }
+        } catch (e: PyException) {
+            Toast.makeText(this, e.message, Toast.LENGTH_LONG).show()
+        }
+        return ""
     }
 
 
