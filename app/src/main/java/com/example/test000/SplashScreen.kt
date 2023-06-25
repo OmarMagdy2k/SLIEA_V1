@@ -14,8 +14,8 @@ class SplashScreen : AppCompatActivity() {
         supportActionBar?.hide()
 
         Handler(Looper.myLooper()!!).postDelayed({
-            val intent = Intent(this@SplashScreen,TextVoice2SL::class.java)
+            val intent = Intent(this@SplashScreen, TextVoice2SL::class.java)
             startActivity(intent)
-            },3200)
+        }, 3200)
     }
 }

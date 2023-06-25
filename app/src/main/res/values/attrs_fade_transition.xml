@@ -2,8 +2,8 @@
 <resources>
 
     <declare-styleable name="FadeTransition">
-        <attr name="startAlpha" format="float"/>
-        <attr name="endAlpha" format="float"/>
+        <attr name="startAlpha" format="float" />
+        <attr name="endAlpha" format="float" />
     </declare-styleable>
 
 </resources>

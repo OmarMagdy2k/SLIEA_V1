@@ -12,9 +12,9 @@ class OnBoardingSub2 : AppCompatActivity() {
 
         val startAppBtn = findViewById<Button>(R.id.startAppBtn)
         startAppBtn.setOnClickListener {
-                val int = Intent(applicationContext, TextVoice2SL::class.java)
-                startActivity(int)
-                finish()
+            val int = Intent(applicationContext, TextVoice2SL::class.java)
+            startActivity(int)
+            finish()
         }
     }
 }
