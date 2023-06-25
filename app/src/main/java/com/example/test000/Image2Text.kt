@@ -43,10 +43,12 @@ class Image2Text : AppCompatActivity() {
     private lateinit var pythonModule: PyObject
     private var selectedImages: MutableList<File> = mutableListOf()
     private lateinit var cameraPhoto: File
-    internal var currentTranslationLanguage : String = ""
+    internal var currentTranslationLanguage: String = ""
     private lateinit var imageSwitcher: ImageSwitcher
+
     //store uris of picked images
     private var images: ArrayList<Uri> = ArrayList()
+
     // current position/index of selected image
     private var currentImagePosition = 0
 
@@ -63,18 +65,22 @@ class Image2Text : AppCompatActivity() {
 
         val languagesOptions = findViewById<ImageView>(R.id.languagesMenu)
         languagesOptions.setOnClickListener {
-            val popupMenu = PopupMenu(this,it)
+            val popupMenu = PopupMenu(this, it)
             popupMenu.setOnMenuItemClickListener { item ->
                 when (item.itemId) {
                     R.id.englishLanguage -> {
-                        currentTranslationLanguage  = "En"
+                        currentTranslationLanguage = "En"
                         true
                     }
+
                     R.id.arabicLanguage -> {
-                        currentTranslationLanguage  = "Ar"
+                        currentTranslationLanguage = "Ar"
                         true
                     }
-                    else -> {false}
+
+                    else -> {
+                        false
+                    }
                 }
             }
             popupMenu.inflate(R.menu.menu_main)
@@ -88,28 +94,30 @@ class Image2Text : AppCompatActivity() {
             when (item.itemId) {
                 R.id.signifyBtn -> {
                     val int = Intent(applicationContext, TextVoice2SL::class.java)
-                    int.putExtra("currentTranslationLanguage",currentTranslationLanguage)
+                    int.putExtra("currentTranslationLanguage", currentTranslationLanguage)
                     startActivity(int)
                     overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
                     finish()
                     true
                 }
+
                 R.id.tranSignBtn -> true
                 R.id.tranSignBetaBtn -> {
                     val int = Intent(applicationContext, Video2Text::class.java)
-                    int.putExtra("currentTranslationLanguage",currentTranslationLanguage)
+                    int.putExtra("currentTranslationLanguage", currentTranslationLanguage)
                     startActivity(int)
                     overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
                     finish()
                     true
                 }
+
                 else -> false
             }
         }
 
         tts = TextToSpeech(applicationContext) { status ->
             if (status != TextToSpeech.ERROR) {
-                if(currentTranslationLanguage != ""){
+                if (currentTranslationLanguage != "") {
                     if (currentTranslationLanguage == "En") {
                         // Set language for TextToSpeech
                         tts.language = Locale.US
@@ -211,9 +219,9 @@ class Image2Text : AppCompatActivity() {
                     val prediction = translateImage(fileName)
                     translatedTextList[uploadedImageIndex] = prediction
                     uploadedCount++
-                    if(uploadedCount == selectedImages.size) {
-                        val stringBuilder : StringBuilder = StringBuilder()
-                        for(word in translatedTextList){
+                    if (uploadedCount == selectedImages.size) {
+                        val stringBuilder: StringBuilder = StringBuilder()
+                        for (word in translatedTextList) {
                             stringBuilder.append(word)
                             stringBuilder.append(" ")
                         }
@@ -232,7 +240,7 @@ class Image2Text : AppCompatActivity() {
 
     private fun translateImage(fileName: String): String {
         try {
-            if (currentTranslationLanguage!=""){
+            if (currentTranslationLanguage != "") {
                 if (currentTranslationLanguage == "En") {
                     return pythonModule.callAttr("translate_image_En", fileName)
                         .toJava(String::class.java)

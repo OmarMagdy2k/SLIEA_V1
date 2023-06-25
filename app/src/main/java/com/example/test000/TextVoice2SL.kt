@@ -27,6 +27,8 @@ import okhttp3.*
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
+import android.content.Context
+import android.content.SharedPreferences
 
 
 class TextVoice2SL : AppCompatActivity() {
@@ -34,81 +36,104 @@ class TextVoice2SL : AppCompatActivity() {
     private var storedVideos = mutableListOf<File>()
     private lateinit var correctedStatement: String
     private lateinit var wordsList: List<String>
-    internal var currentTranslationLanguage : String = ""
+    internal var currentTranslationLanguage: String = ""
+    private val prefsName = "MyPrefs"
+    private val isFirstLaunch = "isFirstLaunch"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_textvoice2sl)
 
-        val intent = intent
-        // Check if the intent contains an extra with key "currentTranslationLanguage"
-        if (intent.hasExtra("currentTranslationLanguage")) {
-            currentTranslationLanguage = intent.getStringExtra("currentTranslationLanguage")!!
-        }
+        val sharedPref: SharedPreferences = getSharedPreferences(prefsName, Context.MODE_PRIVATE)
+        val isFirstLaunch: Boolean = sharedPref.getBoolean(isFirstLaunch, true)
 
-        val languagesOptions = findViewById<ImageView>(R.id.languagesMenu)
-        languagesOptions.setOnClickListener {
-            val popupMenu = PopupMenu(this,it)
-            popupMenu.setOnMenuItemClickListener { item ->
+        if (isFirstLaunch) {
+            // If it's the first launch, start the desired activity or fragment
+            startActivity(Intent(this, OnBoardingMain::class.java))
+
+            // Update the shared preference value to indicate that the page has been visited
+            val editor: SharedPreferences.Editor = sharedPref.edit()
+            editor.putBoolean(this.isFirstLaunch, false)
+            editor.apply()
+        } else {
+            // It's not the first launch, proceed with your regular flow
+
+            val intent = intent
+            // Check if the intent contains an extra with key "currentTranslationLanguage"
+            if (intent.hasExtra("currentTranslationLanguage")) {
+                currentTranslationLanguage = intent.getStringExtra("currentTranslationLanguage")!!
+            }
+
+            val languagesOptions = findViewById<ImageView>(R.id.languagesMenu)
+            languagesOptions.setOnClickListener {
+                val popupMenu = PopupMenu(this, it)
+                popupMenu.setOnMenuItemClickListener { item ->
+                    when (item.itemId) {
+                        R.id.englishLanguage -> {
+                            currentTranslationLanguage = "En"
+                            true
+                        }
+
+                        R.id.arabicLanguage -> {
+                            currentTranslationLanguage = "Ar"
+                            true
+                        }
+
+                        else -> {
+                            false
+                        }
+                    }
+                }
+                popupMenu.inflate(R.menu.menu_main)
+                popupMenu.show()
+            }
+
+            val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
+            bottomNavigationView.selectedItemId = R.id.signifyBtn
+
+            bottomNavigationView.setOnItemSelectedListener { item ->
                 when (item.itemId) {
-                    R.id.englishLanguage -> {
-                        currentTranslationLanguage = "En"
+                    R.id.signifyBtn -> true
+                    R.id.tranSignBtn -> {
+                        val int = Intent(applicationContext, Image2Text::class.java)
+                        int.putExtra("currentTranslationLanguage", currentTranslationLanguage)
+                        startActivity(int)
+                        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+                        finish()
                         true
                     }
-                    R.id.arabicLanguage -> {
-                        currentTranslationLanguage = "Ar"
+
+                    R.id.tranSignBetaBtn -> {
+                        val int = Intent(applicationContext, Video2Text::class.java)
+                        int.putExtra("currentTranslationLanguage", currentTranslationLanguage)
+                        startActivity(int)
+                        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+                        finish()
                         true
                     }
-                    else -> {false}
+
+                    else -> false
                 }
             }
-            popupMenu.inflate(R.menu.menu_main)
-            popupMenu.show()
-        }
 
-        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
-        bottomNavigationView.selectedItemId = R.id.signifyBtn
 
-        bottomNavigationView.setOnItemSelectedListener { item ->
-            when (item.itemId) {
-                R.id.signifyBtn -> true
-                R.id.tranSignBtn -> {
-                    val int = Intent(applicationContext, Image2Text::class.java)
-                    int.putExtra("currentTranslationLanguage",currentTranslationLanguage)
-                    startActivity(int)
-                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
-                    finish()
-                    true
-                }
-                R.id.tranSignBetaBtn -> {
-                    val int = Intent(applicationContext, Video2Text::class.java)
-                    int.putExtra("currentTranslationLanguage",currentTranslationLanguage)
-                    startActivity(int)
-                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
-                    finish()
-                    true
-                }
-                else -> false
+            val editText = findViewById<EditText>(R.id.editTextTextMultiLine)
+
+            val transButton = findViewById<Button>(R.id.trans_button)
+            transButton.setOnClickListener {
+                transText(editText)
             }
-        }
 
+            val speech2TxtBtn = findViewById<ImageButton>(R.id.micButton)
+            speech2TxtBtn.setOnClickListener {
+                startSpeechToText(editText)
+                Toast.makeText(this, "Start Listening", Toast.LENGTH_SHORT).show()
+            }
 
-        val editText = findViewById<EditText>(R.id.editTextTextMultiLine)
-
-        val transButton = findViewById<Button>(R.id.trans_button)
-        transButton.setOnClickListener {
-            transText(editText)
-        }
-
-        val speech2TxtBtn = findViewById<ImageButton>(R.id.micButton)
-        speech2TxtBtn.setOnClickListener {
-            startSpeechToText(editText)
-            Toast.makeText(this, "Start Listening", Toast.LENGTH_SHORT).show()
-        }
-
-        val replayBtn = findViewById<ImageButton>(R.id.replayButton)
-        replayBtn.setOnClickListener {
-            playVideos()
+            val replayBtn = findViewById<ImageButton>(R.id.replayButton)
+            replayBtn.setOnClickListener {
+                playVideos()
+            }
         }
     }
 
@@ -129,7 +154,7 @@ class TextVoice2SL : AppCompatActivity() {
         // Set the language code based on the translationLanguage variable
         speechRecognizerIntent.putExtra(
             RecognizerIntent.EXTRA_LANGUAGE,
-            if (currentTranslationLanguage!=""){
+            if (currentTranslationLanguage != "") {
                 if (currentTranslationLanguage == "Ar") "ar-SA" else "en-US"
             } else "en-US"
         )
@@ -169,7 +194,7 @@ class TextVoice2SL : AppCompatActivity() {
 
     private fun transText(editText: EditText) {
         val userInput = editText.text.toString().lowercase()
-        if(currentTranslationLanguage != "") {
+        if (currentTranslationLanguage != "") {
             if (currentTranslationLanguage == "En") {
                 if (!Python.isStarted()) {
                     Python.start(AndroidPlatform(this))
@@ -207,14 +232,14 @@ class TextVoice2SL : AppCompatActivity() {
         }
         val firestore =
             FirebaseFirestore.getInstance() // Replace with your actual Firestore reference
-        if (currentTranslationLanguage != ""){
+        if (currentTranslationLanguage != "") {
             if (currentTranslationLanguage == "En") {
                 documentRef = firestore.collection("English_Videos").document("Videos")
             } else if (currentTranslationLanguage == "Ar") {
                 documentRef = firestore.collection("Arabic_Videos").document("Videos")
 
-        }
-        }else {
+            }
+        } else {
             documentRef = firestore.collection("English_Videos").document("Videos")
         }
         documentRef.get().addOnSuccessListener { documentSnapshot ->
