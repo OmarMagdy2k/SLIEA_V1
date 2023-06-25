@@ -140,11 +140,11 @@ class Image2Text : AppCompatActivity() {
         }
         val galleryBtn = findViewById<ImageButton>(R.id.galleryButton)
         galleryBtn.setOnClickListener {
-            val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
-            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
-            intent.addCategory(Intent.CATEGORY_OPENABLE)
-            intent.type = "image/*"
-            startActivityForResult(intent, galleryRequestCode)
+            val galleryIntent = Intent(Intent.ACTION_OPEN_DOCUMENT)
+            galleryIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+            galleryIntent.addCategory(Intent.CATEGORY_OPENABLE)
+            galleryIntent.type = "image/*"
+            startActivityForResult(galleryIntent, galleryRequestCode)
         }
 
         val txt2speechButton = findViewById<ImageButton>(R.id.out_voice_button)

@@ -152,6 +152,13 @@ class Video2Text : AppCompatActivity() {
             if (currentVideoPosition < videos.size - 1) {
                 currentVideoPosition++
                 videoView.setVideoURI(videos[currentVideoPosition])
+                videoView.setOnPreparedListener {
+                    videoView.start()
+                    // now set up media controller for the play pause next pre
+                    val mediaCollection = MediaController(this)
+                    mediaCollection.setAnchorView(videoView)
+                    videoView.setMediaController(mediaCollection)
+                }
             } else {
                 //no more images
                 Toast.makeText(this, "No More Videos...", Toast.LENGTH_SHORT).show()
@@ -163,6 +170,13 @@ class Video2Text : AppCompatActivity() {
             if (currentVideoPosition > 0) {
                 currentVideoPosition--
                 videoView.setVideoURI(videos[currentVideoPosition])
+                videoView.setOnPreparedListener {
+                    videoView.start()
+                    // now set up media controller for the play pause next pre
+                    val mediaCollection = MediaController(this)
+                    mediaCollection.setAnchorView(videoView)
+                    videoView.setMediaController(mediaCollection)
+                }
             } else {
                 //no more Videos
                 Toast.makeText(this, "No More Videos...", Toast.LENGTH_SHORT).show()
@@ -170,11 +184,6 @@ class Video2Text : AppCompatActivity() {
         }
 
         videoView = findViewById(R.id.record_videoView)
-        // now set up media controller for the play pause next pre
-        val mediaCollection = MediaController(this)
-        mediaCollection.setAnchorView(videoView)
-        videoView.setMediaController(mediaCollection)
-
 
         initializePython()
     }
@@ -209,23 +218,44 @@ class Video2Text : AppCompatActivity() {
             mediaScanIntent.data = contentUri
             this.sendBroadcast(mediaScanIntent)
             videoView.setVideoURI(contentUri)
-            if (requestCode == galleryRequestCode && resultCode == RESULT_OK) {
-                selectedVideos.clear()
-                videos.clear()
-                // if multiple images are selected
-                if (data?.clipData != null) {
-                    val count = data.clipData?.itemCount
-                    for (i in 0 until count!!) {
-                        val videoUri: Uri = data.clipData?.getItemAt(i)!!.uri
-                        videos.add(videoUri)
-                        selectedVideos.add(createGalleryVideoFile(videoUri))
-                    }
-                    videoView.setVideoURI(videos[0])
-                } else if (data?.data != null) {
-                    // if single image is selected
-                    val videoUri: Uri = data.data!!
-                    videoView.setVideoURI(videoUri)
+            videoView.setOnPreparedListener {
+                videoView.start()
+                // now set up media controller for the play pause next pre
+                val mediaCollection = MediaController(this)
+                mediaCollection.setAnchorView(videoView)
+                videoView.setMediaController(mediaCollection)
+            }
+
+        }
+        if (requestCode == galleryRequestCode && resultCode == RESULT_OK) {
+            selectedVideos.clear()
+            videos.clear()
+            // if multiple Videos are selected
+            if (data?.clipData != null) {
+                val count = data.clipData?.itemCount
+                for (i in 0 until count!!) {
+                    val videoUri: Uri = data.clipData?.getItemAt(i)!!.uri
+                    videos.add(videoUri)
                     selectedVideos.add(createGalleryVideoFile(videoUri))
+                }
+                videoView.setVideoURI(videos[0])
+                videoView.setOnPreparedListener {
+                    videoView.start()
+                    // now set up media controller for the play pause next pre
+                    val mediaCollection = MediaController(this)
+                    mediaCollection.setAnchorView(videoView)
+                    videoView.setMediaController(mediaCollection)
+                }
+            } else if (data?.data != null) {
+                // if single image is selected
+                val videoUri: Uri = data.data!!
+                videoView.setVideoURI(videoUri)
+                videoView.setOnPreparedListener {
+                    videoView.start()
+                    // now set up media controller for the play pause next pre
+                    val mediaCollection = MediaController(this)
+                    mediaCollection.setAnchorView(videoView)
+                    videoView.setMediaController(mediaCollection)
                 }
             }
         }
