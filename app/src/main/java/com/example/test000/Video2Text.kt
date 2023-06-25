@@ -6,13 +6,11 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Environment
 import android.provider.MediaStore
 import android.speech.tts.TextToSpeech
 import android.widget.*
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.content.FileProvider
 import com.chaquo.python.PyException
 import com.chaquo.python.PyObject
 import com.chaquo.python.Python
@@ -21,7 +19,6 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.storage.FirebaseStorage
 import java.io.File
 import java.io.FileOutputStream
-import java.text.SimpleDateFormat
 import java.util.*
 
 
@@ -33,7 +30,6 @@ class Video2Text : AppCompatActivity() {
     private lateinit var txtTranslated: TextView
     private lateinit var tts: TextToSpeech
     private lateinit var pythonModule: PyObject
-    private lateinit var cameraVideo: File
     private var selectedVideos: MutableList<File> = mutableListOf()
     private var videos: ArrayList<Uri> = ArrayList()
     private var currentVideoPosition = 0
@@ -144,7 +140,15 @@ class Video2Text : AppCompatActivity() {
 
         val transBtn = findViewById<Button>(R.id.trans_button)
         transBtn.setOnClickListener {
-            uploadAndTranslateVideos()
+            if (currentTranslationLanguage == "Ar") {
+                Toast.makeText(
+                    this,
+                    "This Feature Only Work in English Language, Change Translation Language to English !!",
+                    Toast.LENGTH_SHORT
+                ).show()
+            } else {
+                uploadAndTranslateVideos()
+            }
         }
 
         val nextBtn = findViewById<ImageButton>(R.id.nextBtn)
@@ -208,35 +212,19 @@ class Video2Text : AppCompatActivity() {
     @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+        selectedVideos.clear()
+        videos.clear()
         if (requestCode == cameraRequestCode && resultCode == RESULT_OK) {
-            selectedVideos.clear()
-            videos.clear()
-
-            val contentUri = Uri.fromFile(cameraVideo)
-            selectedVideos.add(cameraVideo)
-            val mediaScanIntent = Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE)
-            mediaScanIntent.data = contentUri
-            this.sendBroadcast(mediaScanIntent)
-            videoView.setVideoURI(contentUri)
-            videoView.setOnPreparedListener {
-                videoView.start()
-                // now set up media controller for the play pause next pre
-                val mediaCollection = MediaController(this)
-                mediaCollection.setAnchorView(videoView)
-                videoView.setMediaController(mediaCollection)
-            }
-
-        }
-        if (requestCode == galleryRequestCode && resultCode == RESULT_OK) {
-            selectedVideos.clear()
-            videos.clear()
+            val videoUri = data?.data
+            handleVideoUri(videoUri)
+        } else if (requestCode == galleryRequestCode && resultCode == RESULT_OK) {
             // if multiple Videos are selected
             if (data?.clipData != null) {
                 val count = data.clipData?.itemCount
                 for (i in 0 until count!!) {
                     val videoUri: Uri = data.clipData?.getItemAt(i)!!.uri
                     videos.add(videoUri)
-                    selectedVideos.add(createGalleryVideoFile(videoUri))
+                    selectedVideos.add(createVideoFile(videoUri))
                 }
                 videoView.setVideoURI(videos[0])
                 videoView.setOnPreparedListener {
@@ -247,21 +235,29 @@ class Video2Text : AppCompatActivity() {
                     videoView.setMediaController(mediaCollection)
                 }
             } else if (data?.data != null) {
-                // if single image is selected
+                // if single video is selected
                 val videoUri: Uri = data.data!!
-                videoView.setVideoURI(videoUri)
-                videoView.setOnPreparedListener {
-                    videoView.start()
-                    // now set up media controller for the play pause next pre
-                    val mediaCollection = MediaController(this)
-                    mediaCollection.setAnchorView(videoView)
-                    videoView.setMediaController(mediaCollection)
-                }
+                handleVideoUri(videoUri)
             }
         }
     }
 
-    private fun createGalleryVideoFile(videoUri: Uri): File {
+    private fun handleVideoUri(videoUri: Uri?) {
+        if (videoUri != null) {
+            videos.add(videoUri)
+            selectedVideos.add(createVideoFile(videoUri))
+            videoView.setVideoURI(videoUri)
+            videoView.setOnPreparedListener {
+                videoView.start()
+                // now set up media controller for the play pause next pre
+                val mediaCollection = MediaController(this)
+                mediaCollection.setAnchorView(videoView)
+                videoView.setMediaController(mediaCollection)
+            }
+        }
+    }
+
+    private fun createVideoFile(videoUri: Uri): File {
         val tempFile = File.createTempFile("vid", ".mp4")
         tempFile.createNewFile()
         val inputStream = contentResolver.openInputStream(videoUri!!)
@@ -349,18 +345,8 @@ class Video2Text : AppCompatActivity() {
 
     private fun translateVideo(fileName: String): String {
         try {
-            if (currentTranslationLanguage != "") {
-                if (currentTranslationLanguage == "En") {
-                    return pythonModule.callAttr("translate_video_En", fileName)
-                        .toJava(String::class.java)
-                } else if (currentTranslationLanguage == "Ar") {
-                    return pythonModule.callAttr("translate_video_Ar", fileName)
-                        .toJava(String::class.java)
-                }
-            } else {
-                return pythonModule.callAttr("translate_video_En", fileName)
-                    .toJava(String::class.java)
-            }
+            return pythonModule.callAttr("translate_video_En", fileName)
+                .toJava(String::class.java)
         } catch (e: PyException) {
             Toast.makeText(this, e.message, Toast.LENGTH_LONG).show()
         }
@@ -372,35 +358,7 @@ class Video2Text : AppCompatActivity() {
         val takeVideoIntent = Intent(MediaStore.ACTION_VIDEO_CAPTURE)
         // Ensure that there's a camera activity to handle the intent
         if (takeVideoIntent.resolveActivity(packageManager) != null) {
-            // Create the File where the photo should go
-            var videoFile: File? = null
-            try {
-                videoFile = createVideoFile()
-            } catch (ex: Exception) {
-                // handle exception
-            }
-            if (videoFile != null) {
-                val videoURI = FileProvider.getUriForFile(
-                    this,
-                    "com.example.android.provider2",
-                    videoFile
-                )
-                takeVideoIntent.putExtra(MediaStore.EXTRA_OUTPUT, videoURI)
-                cameraVideo = videoFile
-                startActivityForResult(takeVideoIntent, cameraRequestCode)
-            }
+            startActivityForResult(takeVideoIntent, cameraRequestCode)
         }
-    }
-
-    private fun createVideoFile(): File {
-        // Create an image file name
-        val timeStamp: String =
-            SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
-        val storageDir: File? = getExternalFilesDir(Environment.DIRECTORY_MOVIES)
-        return File.createTempFile(
-            "VID_${timeStamp}_",
-            ".mp4",
-            storageDir
-        )
     }
 }
